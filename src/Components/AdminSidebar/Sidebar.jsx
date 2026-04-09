@@ -108,7 +108,7 @@ export default function AdminSidebar() {
       subItems: [
         // { text: 'L', path: '/admin/attendance/live', icon: <LocationIcon /> },
         { text: "Today's Attendance", path: '/admin/dashboard/todays-attandance', icon: <AttendanceIcon /> },
-        { text: 'Manual Entry', path: '/admin/attendance/manual', icon: <VerificationIcon /> },
+        { text: 'Monthly Attandance', path: '/admin/monthly-attandance', icon: <VerificationIcon /> },
         { text: 'Attendance History', path: '/admin/attendance/history', icon: <HistoryIcon /> },
       ],
     },

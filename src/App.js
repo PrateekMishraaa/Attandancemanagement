@@ -8,6 +8,7 @@ import History from './Pages/History.js';
 import Profile from './Pages/Profile.js';
 import TodaysAttandance from "./Pages/Admin/TodaysAttandance.jsx"
 import AdminDashboard from './Pages/Admin/AdminDashboard.jsx';
+import MonthlyAttandance from './Pages/Admin/MonthlyAttandance.jsx';
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
           </PrivateRoute>}/>
               <Route path='/admin/dashboard/todays-attandance' element={<PrivateRoute>
             <TodaysAttandance/>
+          </PrivateRoute>}/>
+          <Route path='/admin/monthly-attandance' element={<PrivateRoute>
+            <MonthlyAttandance/>
           </PrivateRoute>}/>
           <Route path="/" element={<Login />} />
         </Routes>
