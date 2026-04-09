@@ -192,8 +192,8 @@ const AdminDashboard = () => {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
           background: 'white',
-          color: '#1a1a2e',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+          // color: '#1a1a2e',
+          // boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
           display: { xs: 'block', sm: 'none' }
         }}
       >
@@ -309,7 +309,7 @@ const AdminDashboard = () => {
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: '#f5f7fa' }}>
+                  <TableRow sx={{  }}>
                     <TableCell><strong>Employee ID</strong></TableCell>
                     <TableCell><strong>Name</strong></TableCell>
                     <TableCell><strong>Department</strong></TableCell>

@@ -50,7 +50,7 @@ import {
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import Sidebar from "../../Components/AdminSidebar/Sidebar.jsx"
 const drawerWidth = 280;
 
 // Styled Components
@@ -160,110 +160,7 @@ const MonthlyAttandance = () => {
   };
 
   const drawer = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Logo Section */}
-      <Box sx={{ p: 3, textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-          WorkSync
-        </Typography>
-        <Typography variant="caption" sx={{ opacity: 0.7 }}>
-          Admin Portal
-        </Typography>
-      </Box>
-
-      {/* User Info */}
-      <Box sx={{ p: 3, textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <Avatar sx={{ width: 80, height: 80, mx: 'auto', mb: 2, bgcolor: '#667eea' }}>
-          Admin
-        </Avatar>
-        <Typography variant="subtitle1" fontWeight="bold">
-          Admin User
-        </Typography>
-        <Typography variant="caption" sx={{ opacity: 0.7 }}>
-          ID: EMP0004
-        </Typography>
-      </Box>
-
-      {/* Menu Items */}
-      <List sx={{ flex: 1, px: 2, pt: 2 }}>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.text}
-            onClick={() => navigate(item.path)}
-            sx={{
-              borderRadius: '12px',
-              mb: 1,
-              '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.1)',
-              },
-              backgroundColor: item.text === 'Dashboard' ? 'rgba(255,255,255,0.1)' : 'transparent'
-            }}
-          >
-            <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.text} />
-            <ArrowIcon sx={{ fontSize: 18, opacity: 0.5 }} />
-          </ListItem>
-        ))}
-      </List>
-
-      {/* Bottom Menu Items */}
-      <List sx={{ px: 2, pb: 2 }}>
-        <ListItem
-          button
-          onClick={() => navigate('/admin/analytics')}
-          sx={{
-            borderRadius: '12px',
-            mb: 1,
-            '&:hover': {
-              backgroundColor: 'rgba(255,255,255,0.1)',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-            <AnalyticsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Analytics" />
-        </ListItem>
-        <ListItem
-          button
-          onClick={() => navigate('/admin/settings')}
-          sx={{
-            borderRadius: '12px',
-            mb: 1,
-            '&:hover': {
-              backgroundColor: 'rgba(255,255,255,0.1)',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Settings" />
-        </ListItem>
-      </List>
-
-      {/* Logout Button */}
-      <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <ListItem
-          button
-          onClick={handleLogout}
-          sx={{
-            borderRadius: '12px',
-            '&:hover': {
-              backgroundColor: 'rgba(255,255,255,0.1)',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
-      </Box>
-    </Box>
+  <Sidebar/>
   );
 
   return (

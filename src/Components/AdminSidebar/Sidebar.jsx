@@ -204,7 +204,7 @@ export default function AdminSidebar() {
           textAlign: 'center',
           borderBottom: 1,
           borderColor: 'divider',
-          bgcolor: 'background.paper',
+          // bgcolor: 'background.paper',
         }}
       >
         <Avatar
@@ -485,7 +485,7 @@ export default function AdminSidebar() {
           '& .MuiDrawer-paper': { 
             boxSizing: 'border-box', 
             width: 280,
-            bgcolor: 'background.default',
+            // bgcolor: 'background.default',
           },
         }}
       >
@@ -507,7 +507,7 @@ export default function AdminSidebar() {
               duration: theme.transitions.duration.enteringScreen,
             }),
             overflowX: 'hidden',
-            bgcolor: 'background.default',
+            // bgcolor: 'background.default', 
             borderRight: '1px solid',
             borderColor: 'divider',
           },
