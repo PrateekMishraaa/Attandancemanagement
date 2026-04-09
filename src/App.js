@@ -6,6 +6,8 @@ import Login from './Pages/Login.js';
 import Dashboard from './Pages/Dashboard.js';
 import History from './Pages/History.js';
 import Profile from './Pages/Profile.js';
+import TodaysAttandance from "./Pages/Admin/TodaysAttandance.jsx"
+import AdminDashboard from './Pages/Admin/AdminDashboard.jsx';
 
 function App() {
   return (
@@ -28,6 +30,12 @@ function App() {
               <Profile />
             </PrivateRoute>
           } />
+          <Route path='/admin/dashboard' element={<PrivateRoute>
+            <AdminDashboard/>
+          </PrivateRoute>}/>
+              <Route path='/admin/dashboard/todays-attandance' element={<PrivateRoute>
+            <TodaysAttandance/>
+          </PrivateRoute>}/>
           <Route path="/" element={<Login />} />
         </Routes>
       </Router>
