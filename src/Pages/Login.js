@@ -582,10 +582,10 @@ const Login = () => {
               </div>
 
               {/* Footer Links */}
-              <div className="footer-links">
-                <a href="#" className="footer-link">Not registered? Register</a>
+              {/* <div className="footer-links">
+                <a href="" className="footer-link">Not registered? Register</a>
                 <a href="#" className="footer-link">Forgot Password</a>
-              </div>
+              </div> */}
 
               {/* Location Badge */}
               <div className="location-badge">

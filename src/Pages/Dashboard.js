@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
@@ -11,9 +11,9 @@ const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [todayStatus, setTodayStatus] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
   const [connectionStatus, setConnectionStatus] = useState(true);
   const [locationPermission, setLocationPermission] = useState(null);
   const [showTimeWarning, setShowTimeWarning] = useState(false);
@@ -24,8 +24,7 @@ const Dashboard = () => {
   const [workingHours, setWorkingHours] = useState(0);
 
   // Office Timings Configuration
-  const OFFICE_START_TIME = "10:00";
-  const OFFICE_END_TIME = "19:00";
+  // const OFFICE_START_TIME = "10:0Login.js
   const GRACE_PERIOD_MINUTES = 15;
 
   const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';

@@ -3,7 +3,7 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Button,
+  // Button,
   IconButton,
   Avatar,
   Menu,
@@ -13,11 +13,11 @@ import {
   Tooltip,
   Divider,
   ListItemIcon,
-  useTheme,
+  // useTheme,
   alpha
 } from '@mui/material';
 import {
-  AccountCircle,
+  // AccountCircle,
   Logout,
   Settings,
   Person,
@@ -25,7 +25,7 @@ import {
   Fingerprint,
   Brightness4,
   Brightness7,
-  ExitToApp
+  // ExitToApp
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../services/auth';
@@ -38,7 +38,7 @@ const Navbar = ({ toggleTheme, isDarkMode }) => {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  // const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   // Handle scroll effect
   useEffect(() => {

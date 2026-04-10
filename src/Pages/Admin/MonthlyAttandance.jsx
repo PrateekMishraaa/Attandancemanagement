@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Container,
+  // Container,
   Paper,
   Typography,
   Grid,
@@ -21,12 +21,12 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  useTheme,
+  // List,
+  // ListItem,
+  // ListItemIcon,
+  // ListItemText,
+  // Divider,
+  // useTheme,
   alpha,
   Button
 } from '@mui/material';
@@ -37,15 +37,15 @@ import {
   Assignment as LeaveIcon,
   SwapHoriz as ShiftIcon,
   People as EmployeesIcon,
-  TrendingUp as AnalyticsIcon,
-  Settings as SettingsIcon,
-  Logout as LogoutIcon,
+  // TrendingUp as AnalyticsIcon,/
+  // Settings as SettingsIcon,
+  // Logout as LogoutIcon,
   AccessTime as LateIcon,
   CheckCircle as PresentIcon,
   Cancel as AbsentIcon,
-  ChevronRight as ArrowIcon,
+  // ChevronRight as ArrowIcon,
   ArrowUpward as ArrowUpIcon,
-  WorkOutline as WorkIcon
+  // WorkOutline as WorkIcon
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
@@ -101,7 +101,7 @@ const MonthlyAttandance = () => {
   useEffect(() => {
     fetchTodayLateEmployees();
     fetchDashboardStats();
-  }, []);
+  },[]);
 
   const getAuthHeaders = () => ({
     headers: {
@@ -142,22 +142,22 @@ const MonthlyAttandance = () => {
     }
   };
 
-  const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
-    { text: 'Attendance', icon: <AttendanceIcon />, path: '/admin/attendance' },
-    { text: 'Leave Management', icon: <LeaveIcon />, path: '/admin/leaves' },
-    { text: 'Shift Management', icon: <ShiftIcon />, path: '/admin/shifts' },
-  ];
+  // const menuItems = [
+  //   { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
+  //   { text: 'Attendance', icon: <AttendanceIcon />, path: '/admin/attendance' },
+  //   { text: 'Leave Management', icon: <LeaveIcon />, path: '/admin/leaves' },
+  //   { text: 'Shift Management', icon: <ShiftIcon />, path: '/admin/shifts' },
+  // ];
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem('token');
+  //   localStorage.removeItem('user');
+  //   navigate('/login');
+  // };
 
   const drawer = (
   <Sidebar/>

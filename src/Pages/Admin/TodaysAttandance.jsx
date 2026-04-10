@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Container,
+  // Container,
   Paper,
   Typography,
   Grid,
@@ -21,12 +21,12 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  useTheme,
+  // List,
+  // ListItem,
+  // ListItemIcon,
+  // ListItemText,
+  // Divider,
+  // useTheme,
   alpha
 } from '@mui/material';
 import {
@@ -38,11 +38,11 @@ import {
   People as EmployeesIcon,
   TrendingUp as AnalyticsIcon,
   Settings as SettingsIcon,
-  Logout as LogoutIcon,
+  // Logout as LogoutIcon,
   AccessTime as LateIcon,
   CheckCircle as PresentIcon,
   Cancel as AbsentIcon,
-  ChevronRight as ArrowIcon
+  // ChevronRight as ArrowIcon
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';

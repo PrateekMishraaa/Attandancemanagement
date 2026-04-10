@@ -15,27 +15,27 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import {
   Dashboard as DashboardIcon,
-  People as PeopleIcon,
+  // People as PeopleIcon,
   EventNote as AttendanceIcon,
   CalendarToday as LeaveIcon,
-  Business as DepartmentIcon,
+  // Business as DepartmentIcon,
   Schedule as ShiftIcon,
   Settings as SettingsIcon,
   Assessment as ReportsIcon,
   ChevronLeft as ChevronLeftIcon,
   Logout as LogoutIcon,
-  AccountCircle as AccountIcon,
+  // AccountCircle as AccountIcon,
   ExpandLess,
   ExpandMore,
   AdminPanelSettings as AdminIcon,
   LocationOn as LocationIcon,
   VerifiedUser as VerificationIcon,
-  History as HistoryIcon,
+  // History as HistoryIcon,
   BackupTable as BackupIcon,
   Security as SecurityIcon,
   Menu as MenuIcon,
   CalendarToday,
-  Assessment,
+  // Assessment,
 } from '@mui/icons-material';
 
 export default function AdminSidebar() {
@@ -52,7 +52,7 @@ export default function AdminSidebar() {
 
   // Get user data from localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
