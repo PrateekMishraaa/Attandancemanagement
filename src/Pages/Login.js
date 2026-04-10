@@ -69,7 +69,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      const errorMessage = error.response?.data?.message || 'Something went wrong. Please try again.';
+      const errorMessage = error.response?.data?.message || '429 Opppssss Too Many Request Please Try after some time.';
       toast.error(errorMessage);
       setError(errorMessage);
     } finally {

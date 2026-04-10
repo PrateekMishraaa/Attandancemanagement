@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
-  // Container,
   Paper,
   Typography,
   Grid,
@@ -21,36 +20,25 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  // List,
-  // ListItem,
-  // ListItemIcon,
-  // ListItemText,
-  // Divider,
-  // useTheme,
   alpha,
   Button
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  // Dashboard as DashboardIcon,
   EventNote as AttendanceIcon,
   Assignment as LeaveIcon,
   SwapHoriz as ShiftIcon,
   People as EmployeesIcon,
-  // TrendingUp as AnalyticsIcon,/
-  // Settings as SettingsIcon,
-  // Logout as LogoutIcon,
   AccessTime as LateIcon,
   CheckCircle as PresentIcon,
   Cancel as AbsentIcon,
-  // ChevronRight as ArrowIcon,
-  ArrowUpward as ArrowUpIcon,
-  // WorkOutline as WorkIcon
+  ArrowUpward as ArrowUpIcon
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from "../../Components/AdminSidebar/Sidebar.jsx"
+import Sidebar from "../../Components/AdminSidebar/Sidebar.jsx";
+
 const drawerWidth = 280;
 
 // Styled Components
@@ -98,69 +86,60 @@ const MonthlyAttandance = () => {
 
   const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
 
- useEffect(() => {
-  fetchTodayLateEmployees();
-  fetchDashboardStats();
-}, [fetchTodayLateEmployees, fetchDashboardStats]);
-
-  const getAuthHeaders = () => ({
+  // Define getAuthHeaders with useCallback to prevent recreation on every render
+  const getAuthHeaders = useCallback(() => ({
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
       'Content-Type': 'application/json'
     }
-  });
+  }), []);
 
-const fetchTodayLateEmployees = useCallback(async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
-    if (response.data.success) {
-      setLateEmployees(response.data.data);
-      setStats(prev => ({ ...prev, lateToday: response.data.data.length }));
+  // Define fetchTodayLateEmployees with useCallback
+  const fetchTodayLateEmployees = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
+      if (response.data.success) {
+        setLateEmployees(response.data.data);
+        setStats(prev => ({ ...prev, lateToday: response.data.data.length }));
+      }
+    } catch (error) {
+      console.error('Error fetching late employees:', error);
+      // Demo data for display
+      setLateEmployees([
+        { employeeId: 'EMP001', name: 'Parait Kumar', department: 'IT', checkInTime: '10:30:00', lateByMinutes: 15 },
+        { employeeId: 'EMP0000', name: 'Prateek', department: 'IT', checkInTime: '10:16:24', lateByMinutes: 1 },
+        { employeeId: 'EMP0004', name: 'Pratyush', department: 'IT', checkInTime: '14:01:50', lateByMinutes: 226 }
+      ]);
     }
-  } catch (error) {
-    console.error('Error fetching late employees:', error);
-    // Demo data for display
-    setLateEmployees([
-      { employeeId: 'EMP001', name: 'Parait Kumar', department: 'IT', checkInTime: '10:30:00', lateByMinutes: 15 },
-      { employeeId: 'EMP0000', name: 'Prateek', department: 'IT', checkInTime: '10:16:24', lateByMinutes: 1 },
-      { employeeId: 'EMP0004', name: 'Pratyush', department: 'IT', checkInTime: '14:01:50', lateByMinutes: 226 }
-    ]);
-  }
-}, [API_BASE_URL, getAuthHeaders]); // Add dependencies if these can change
+  }, [API_BASE_URL, getAuthHeaders]);
 
-const fetchDashboardStats = useCallback(async () => {
-  setLoading(true);
-  try {
-    const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
-    if (response.data.success) {
-      setStats(response.data.data);
+  // Define fetchDashboardStats with useCallback
+  const fetchDashboardStats = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
+      if (response.data.success) {
+        setStats(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-  } finally {
-    setLoading(false);
-  }
-}, [API_BASE_URL, getAuthHeaders]); 
+  }, [API_BASE_URL, getAuthHeaders]);
 
-  // const menuItems = [
-  //   { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
-  //   { text: 'Attendance', icon: <AttendanceIcon />, path: '/admin/attendance' },
-  //   { text: 'Leave Management', icon: <LeaveIcon />, path: '/admin/leaves' },
-  //   { text: 'Shift Management', icon: <ShiftIcon />, path: '/admin/shifts' },
-  // ];
+  // useEffect with proper dependencies
+  useEffect(() => {
+    fetchTodayLateEmployees();
+    fetchDashboardStats();
+  }, [fetchTodayLateEmployees, fetchDashboardStats]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem('token');
-  //   localStorage.removeItem('user');
-  //   navigate('/login');
-  // };
-
   const drawer = (
-  <Sidebar/>
+    <Sidebar/>
   );
 
   return (

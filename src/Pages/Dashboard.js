@@ -11,9 +11,7 @@ const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [todayStatus, setTodayStatus] = useState(null);
-  // const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
-  // const [error, setError] = useState('');
   const [connectionStatus, setConnectionStatus] = useState(true);
   const [locationPermission, setLocationPermission] = useState(null);
   const [showTimeWarning, setShowTimeWarning] = useState(false);
@@ -24,11 +22,98 @@ const Dashboard = () => {
   const [workingHours, setWorkingHours] = useState(0);
 
   // Office Timings Configuration
-  // const OFFICE_START_TIME = "10:00";
-  // const OFFICE_END_TIME = "19:00";
   const GRACE_PERIOD_MINUTES = 15;
 
   const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
+
+  // Define updateDateTime first (before useEffect)
+  const updateDateTime = useCallback(() => {
+    const now = new Date();
+    setCurrentTime(now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    }));
+    setCurrentDate(now.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }));
+  }, []);
+
+  // Define checkConnection with cleanup
+  const checkConnection = useCallback(() => {
+    setConnectionStatus(navigator.onLine);
+    
+    const handleOnline = () => setConnectionStatus(true);
+    const handleOffline = () => setConnectionStatus(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Cleanup function
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Define fetchTodayStatus (before useEffect that uses it)
+  const fetchTodayStatus = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const response = await axios.get(`${API_BASE_URL}/attendance/today`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success) {
+        setTodayStatus(response.data.data);
+        if (response.data.data?.workingHours) {
+          setWorkingHours(response.data.data.workingHours);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching today status:', error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    }
+  }, [navigate, API_BASE_URL]);
+
+  // Define fetchMonthlyStats
+  const fetchMonthlyStats = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const response = await axios.get(`${API_BASE_URL}/attendance/monthly-stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success) {
+        setMonthlyStats(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching monthly stats:', error);
+    }
+  }, [API_BASE_URL]);
+
+  // Define fetchStreakCount
+  const fetchStreakCount = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const response = await axios.get(`${API_BASE_URL}/attendance/streak`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success) {
+        setStreakCount(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching streak:', error);
+    }
+  }, [API_BASE_URL]);
 
   // Set greeting based on time
   useEffect(() => {
@@ -38,6 +123,7 @@ const Dashboard = () => {
     else setGreeting('Good Evening');
   }, []);
 
+  // Initial data fetch effect
   useEffect(() => {
     const fetchUserTokenData = async () => {
       try {
@@ -55,51 +141,20 @@ const Dashboard = () => {
     fetchUserTokenData();
     fetchMonthlyStats();
     fetchStreakCount();
-  }, [loginToken, navigate]);
+  }, [loginToken, navigate, fetchMonthlyStats, fetchStreakCount]);
 
- useEffect(() => {
-  fetchTodayStatus();
-  const cleanupConnection = checkConnection(); // Returns cleanup function
-  updateDateTime();
-  const timer = setInterval(updateDateTime, 1000);
-  
-  return () => {
-    clearInterval(timer);
-    if (cleanupConnection) cleanupConnection(); // Clean up event listeners
-  };
-}, [fetchTodayStatus, checkConnection, updateDateTime]);
-
-const updateDateTime = useCallback(() => {
-  const now = new Date();
-  setCurrentTime(now.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  }));
-  setCurrentDate(now.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }));
-}, []); 
-
-const checkConnection = useCallback(() => {
-  setConnectionStatus(navigator.onLine);
-  
-  const handleOnline = () => setConnectionStatus(true);
-  const handleOffline = () => setConnectionStatus(false);
-  
-  window.addEventListener('online', handleOnline);
-  window.addEventListener('offline', handleOffline);
-  
-  // Cleanup function
-  return () => {
-    window.removeEventListener('online', handleOnline);
-    window.removeEventListener('offline', handleOffline);
-  };
-}, []); 
+  // Main effect for real-time updates
+  useEffect(() => {
+    fetchTodayStatus();
+    const cleanupConnection = checkConnection();
+    updateDateTime();
+    const timer = setInterval(updateDateTime, 1000);
+    
+    return () => {
+      clearInterval(timer);
+      if (cleanupConnection) cleanupConnection();
+    };
+  }, [fetchTodayStatus, checkConnection, updateDateTime]);
 
   const isCheckInAllowed = () => {
     const now = new Date();
@@ -143,57 +198,6 @@ const checkConnection = useCallback(() => {
     const startTimeInMinutes = 10 * 60;
     const graceTimeInMinutes = startTimeInMinutes + GRACE_PERIOD_MINUTES;
     return currentTimeInMinutes > graceTimeInMinutes;
-  };
-
-const fetchTodayStatus = useCallback(async () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    const response = await axios.get(`${API_BASE_URL}/attendance/today`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (response.data.success) {
-      setTodayStatus(response.data.data);
-      if (response.data.data?.workingHours) {
-        setWorkingHours(response.data.data.workingHours);
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching today status:', error);
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      navigate('/login');
-    }
-  }
-}, [navigate]);
-  const fetchMonthlyStats = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const response = await axios.get(`${API_BASE_URL}/attendance/monthly-stats`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (response.data.success) {
-        setMonthlyStats(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching monthly stats:', error);
-    }
-  };
-
-  const fetchStreakCount = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const response = await axios.get(`${API_BASE_URL}/attendance/streak`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (response.data.success) {
-        setStreakCount(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching streak:', error);
-    }
   };
 
   const getCurrentLocation = () => {
