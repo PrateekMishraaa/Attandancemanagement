@@ -512,7 +512,7 @@ export default function AdminSidebar() {
             borderColor: 'divider',
           },
         }}
-        variant="permanent"
+        // variant="permanent"
         open={open}
       >
         {drawerContent}

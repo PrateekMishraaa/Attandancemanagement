@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   // Container,
@@ -122,62 +122,61 @@ const AdminDashboard = () => {
   const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
 
   useEffect(() => {
-    fetchTodayLateEmployees();
-    fetchDashboardStats();
-  }, []);
+  fetchTodayLateEmployees();
+  fetchDashboardStats();
+}, [fetchTodayLateEmployees, fetchDashboardStats]);
 
-  const getAuthHeaders = () => ({
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
+  const getAuthHeaders = useCallback(() => ({
+  headers: {
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json'
+  }
+}), [])
+
+const fetchTodayLateEmployees = useCallback(async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
+    if (response.data.success) {
+      setLateEmployees(response.data.data);
     }
-  });
+  } catch (error) {
+    console.error('Error fetching late employees:', error);
+  }
+}, [getAuthHeaders]); 
 
-  const fetchTodayLateEmployees = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
-      if (response.data.success) {
-        setLateEmployees(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching late employees:', error);
+  const fetchDashboardStats = useCallback(async () => {
+  setLoading(true);
+  try {
+    const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
+    if (response.data.success) {
+      setStats(response.data.data);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+  } finally {
+    setLoading(false);
+  }
+}, [getAuthHeaders]);
 
-  const fetchDashboardStats = async () => {
-    setLoading(true);
-    try {
-      // Fetch today's attendance summary
-      const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
-      if (response.data.success) {
-        setStats(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
-    { text: 'Attendance', icon: <AttendanceIcon />, path: '/admin/attendance' },
-    { text: 'Leave Management', icon: <LeaveIcon />, path: '/admin/leaves' },
-    { text: 'Shift Management', icon: <ShiftIcon />, path: '/admin/shifts' },
-    { text: 'Employees', icon: <EmployeesIcon />, path: '/admin/employees' },
-    { text: 'Analytics', icon: <AnalyticsIcon />, path: '/admin/analytics' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/admin/settings' },
-  ];
+  // const menuItems = [
+  //   { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
+  //   { text: 'Attendance', icon: <AttendanceIcon />, path: '/admin/attendance' },
+  //   { text: 'Leave Management', icon: <LeaveIcon />, path: '/admin/leaves' },
+  //   { text: 'Shift Management', icon: <ShiftIcon />, path: '/admin/shifts' },
+  //   { text: 'Employees', icon: <EmployeesIcon />, path: '/admin/employees' },
+  //   { text: 'Analytics', icon: <AnalyticsIcon />, path: '/admin/analytics' },
+  //   { text: 'Settings', icon: <SettingsIcon />, path: '/admin/settings' },
+  // ];
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem('token');
+  //   localStorage.removeItem('user');
+  //   navigate('/login');
+  // };
 
   const drawer = (
   <Sidebar/>

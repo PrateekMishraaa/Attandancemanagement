@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   // Container,
@@ -32,7 +32,7 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Dashboard as DashboardIcon,
+  // Dashboard as DashboardIcon,
   EventNote as AttendanceIcon,
   Assignment as LeaveIcon,
   SwapHoriz as ShiftIcon,
@@ -98,10 +98,10 @@ const MonthlyAttandance = () => {
 
   const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
 
-  useEffect(() => {
-    fetchTodayLateEmployees();
-    fetchDashboardStats();
-  },[]);
+ useEffect(() => {
+  fetchTodayLateEmployees();
+  fetchDashboardStats();
+}, [fetchTodayLateEmployees, fetchDashboardStats]);
 
   const getAuthHeaders = () => ({
     headers: {
@@ -110,37 +110,37 @@ const MonthlyAttandance = () => {
     }
   });
 
-  const fetchTodayLateEmployees = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
-      if (response.data.success) {
-        setLateEmployees(response.data.data);
-        setStats(prev => ({ ...prev, lateToday: response.data.data.length }));
-      }
-    } catch (error) {
-      console.error('Error fetching late employees:', error);
-      // Demo data for display
-      setLateEmployees([
-        { employeeId: 'EMP001', name: 'Parait Kumar', department: 'IT', checkInTime: '10:30:00', lateByMinutes: 15 },
-        { employeeId: 'EMP0000', name: 'Prateek', department: 'IT', checkInTime: '10:16:24', lateByMinutes: 1 },
-        { employeeId: 'EMP0004', name: 'Pratyush', department: 'IT', checkInTime: '14:01:50', lateByMinutes: 226 }
-      ]);
+const fetchTodayLateEmployees = useCallback(async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
+    if (response.data.success) {
+      setLateEmployees(response.data.data);
+      setStats(prev => ({ ...prev, lateToday: response.data.data.length }));
     }
-  };
+  } catch (error) {
+    console.error('Error fetching late employees:', error);
+    // Demo data for display
+    setLateEmployees([
+      { employeeId: 'EMP001', name: 'Parait Kumar', department: 'IT', checkInTime: '10:30:00', lateByMinutes: 15 },
+      { employeeId: 'EMP0000', name: 'Prateek', department: 'IT', checkInTime: '10:16:24', lateByMinutes: 1 },
+      { employeeId: 'EMP0004', name: 'Pratyush', department: 'IT', checkInTime: '14:01:50', lateByMinutes: 226 }
+    ]);
+  }
+}, [API_BASE_URL, getAuthHeaders]); // Add dependencies if these can change
 
-  const fetchDashboardStats = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
-      if (response.data.success) {
-        setStats(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
+const fetchDashboardStats = useCallback(async () => {
+  setLoading(true);
+  try {
+    const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
+    if (response.data.success) {
+      setStats(response.data.data);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+  } finally {
+    setLoading(false);
+  }
+}, [API_BASE_URL, getAuthHeaders]); 
 
   // const menuItems = [
   //   { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },

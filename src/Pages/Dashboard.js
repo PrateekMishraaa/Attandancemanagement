@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
@@ -24,7 +24,8 @@ const Dashboard = () => {
   const [workingHours, setWorkingHours] = useState(0);
 
   // Office Timings Configuration
-  // const OFFICE_START_TIME = "10:0Login.js
+  // const OFFICE_START_TIME = "10:00";
+  // const OFFICE_END_TIME = "19:00";
   const GRACE_PERIOD_MINUTES = 15;
 
   const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
@@ -56,35 +57,49 @@ const Dashboard = () => {
     fetchStreakCount();
   }, [loginToken, navigate]);
 
-  useEffect(() => {
-    fetchTodayStatus();
-    checkConnection();
-    updateDateTime();
-    const timer = setInterval(updateDateTime, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const updateDateTime = () => {
-    const now = new Date();
-    setCurrentTime(now.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    }));
-    setCurrentDate(now.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }));
+ useEffect(() => {
+  fetchTodayStatus();
+  const cleanupConnection = checkConnection(); // Returns cleanup function
+  updateDateTime();
+  const timer = setInterval(updateDateTime, 1000);
+  
+  return () => {
+    clearInterval(timer);
+    if (cleanupConnection) cleanupConnection(); // Clean up event listeners
   };
+}, [fetchTodayStatus, checkConnection, updateDateTime]);
 
-  const checkConnection = () => {
-    setConnectionStatus(navigator.onLine);
-    window.addEventListener('online', () => setConnectionStatus(true));
-    window.addEventListener('offline', () => setConnectionStatus(false));
+const updateDateTime = useCallback(() => {
+  const now = new Date();
+  setCurrentTime(now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }));
+  setCurrentDate(now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }));
+}, []); 
+
+const checkConnection = useCallback(() => {
+  setConnectionStatus(navigator.onLine);
+  
+  const handleOnline = () => setConnectionStatus(true);
+  const handleOffline = () => setConnectionStatus(false);
+  
+  window.addEventListener('online', handleOnline);
+  window.addEventListener('offline', handleOffline);
+  
+  // Cleanup function
+  return () => {
+    window.removeEventListener('online', handleOnline);
+    window.removeEventListener('offline', handleOffline);
   };
+}, []); 
 
   const isCheckInAllowed = () => {
     const now = new Date();
@@ -130,28 +145,27 @@ const Dashboard = () => {
     return currentTimeInMinutes > graceTimeInMinutes;
   };
 
-  const fetchTodayStatus = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const response = await axios.get(`${API_BASE_URL}/attendance/today`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (response.data.success) {
-        setTodayStatus(response.data.data);
-        if (response.data.data?.workingHours) {
-          setWorkingHours(response.data.data.workingHours);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching today status:', error);
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        navigate('/login');
+const fetchTodayStatus = useCallback(async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const response = await axios.get(`${API_BASE_URL}/attendance/today`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (response.data.success) {
+      setTodayStatus(response.data.data);
+      if (response.data.data?.workingHours) {
+        setWorkingHours(response.data.data.workingHours);
       }
     }
-  };
-
+  } catch (error) {
+    console.error('Error fetching today status:', error);
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      navigate('/login');
+    }
+  }
+}, [navigate]);
   const fetchMonthlyStats = async () => {
     try {
       const token = localStorage.getItem('token');

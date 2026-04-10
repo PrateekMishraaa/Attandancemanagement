@@ -23,7 +23,7 @@ import {
   CalendarToday,
   Edit,
   LocationOn,
-  School,
+  // School,
   Work
 } from '@mui/icons-material';
 import Navbar from '../Components/Layout/Navbar.js';
