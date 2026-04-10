@@ -17,7 +17,7 @@ const AdminDashboard = () => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:3500/api/admin/employees');
+        const response = await axios.get('https://attendancemanagementbackend-gg9v.onrender.com/api/admin/employees');
         console.log('All employees:', response.data);
         
         if (response.data.success) {
