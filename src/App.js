@@ -48,19 +48,19 @@ function App() {
           
           {/* Admin Routes - Only accessible by admin role */}
           <Route path='/admin/dashboard' element={
-            <PrivateRoute allowedRoles={['admin']}>
+            <PrivateRoute allowedRoles={['Admin']}>
               <AdminDashboard />
             </PrivateRoute>
           } />
           
           <Route path='/admin/dashboard/todays-attandance' element={
-            <PrivateRoute allowedRoles={['admin']}>
+            <PrivateRoute allowedRoles={['Admin']}>
               <TodaysAttandance />
             </PrivateRoute>
           } />
           
           <Route path='/admin/monthly-attandance' element={
-            <PrivateRoute allowedRoles={['admin']}>
+            <PrivateRoute allowedRoles={['Admin']}>
               <MonthlyAttandance />
             </PrivateRoute>
           } />

@@ -34,7 +34,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('https://attendancemanagementbackend-gg9v.onrender.com/api/auth/login', formData, {
+      const response = await axios.post(' https://attendancemanagementbackend-gg9v.onrender.com/api/auth/login', formData, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -57,7 +57,7 @@ const Login = () => {
         });
         
         setTimeout(() => {
-          if (user.role === 'Admin' || user.role === 'admin') {
+          if (user.role === 'Admin' || user.role === 'Admin') {
             navigate('/admin/dashboard');
           } else if (user.role === 'Manager' || user.role === 'manager') {
             navigate('/manager-dashboard');

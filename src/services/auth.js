@@ -45,7 +45,7 @@ export const login = async (employeeId, password) => {
 // Get default permissions based on role
 const getDefaultPermissions = (role) => {
   const permissions = {
-    'admin': [
+    'Admin': [  // Keep as 'Admin' with capital A
       'view_all_users',
       'edit_all_users',
       'delete_users',
@@ -59,7 +59,7 @@ const getDefaultPermissions = (role) => {
       'manage_departments',
       'manage_settings'
     ],
-    'manager': [
+    'manager': [  // Keep as 'manager' lowercase
       'view_team_members',
       'edit_team_members',
       'view_team_attendance',
@@ -68,7 +68,7 @@ const getDefaultPermissions = (role) => {
       'view_team_reports',
       'manage_team_schedule'
     ],
-    'employee': [
+    'employee': [  // Keep as 'employee' lowercase
       'view_own_profile',
       'edit_own_profile',
       'view_own_attendance',
@@ -160,7 +160,7 @@ export const hasPermission = (permission) => {
   if (!user) return false;
   
   // Admin has all permissions
-  if (user.role === 'admin') return true;
+  if (user.role === 'Admin') return true;
   
   const permissions = user.permissions || getDefaultPermissions(user.role);
   return permissions.includes(permission);
@@ -176,8 +176,8 @@ export const getUserPermissions = () => {
   const user = getCurrentUser();
   if (!user) return [];
   
-  if (user.role === 'admin') {
-    return getDefaultPermissions('admin');
+  if (user.role === 'Admin') {
+    return getDefaultPermissions('Admin');
   }
   
   return user.permissions || getDefaultPermissions(user.role);
@@ -217,14 +217,17 @@ export const verifyToken = async () => {
 export const getDashboardRoute = () => {
   const role = getUserRole();
   
+  console.log('Getting dashboard route for role:', role); // Debug log
+  
   switch(role) {
-    case 'admin':
+    case 'Admin':
       return '/admin/dashboard';
     case 'manager':
       return '/manager/dashboard';
     case 'employee':
       return '/dashboard';
     default:
+      console.warn('Unknown role:', role);
       return '/login';
   }
 };
@@ -235,9 +238,9 @@ export const getUserDisplayInfo = () => {
   if (!user) return { name: 'Guest', role: 'guest' };
   
   const roleLabels = {
-    'admin': 'Administrator',
+    'Admin': 'Administrator',
     'manager': 'Team Manager',
-    'employee': 'Employee'
+    'employee': 'Employee'  // Changed from 'Employee' to 'employee' for consistency
   };
   
   return {

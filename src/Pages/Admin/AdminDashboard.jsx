@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../Components/AdminSidebar/Sidebar';
 import axios from "axios";
+import Leaves from '../Leaves/Leaves.jsx';
 
 const AdminDashboard = () => {
+  const [openLeaves, setOpenLeaves] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -67,6 +69,14 @@ const AdminDashboard = () => {
     return name ? name.charAt(0).toUpperCase() : '?';
   };
 
+  const handleApproveLeaveClick = () => {
+    setOpenLeaves(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenLeaves(false);
+  };
+
   const styles = `
     * {
       margin: 0;
@@ -77,7 +87,6 @@ const AdminDashboard = () => {
     .dashboard-container {
       display: flex;
       min-height: 100vh;
-      
     }
 
     .sidebar-fixed {
@@ -431,6 +440,97 @@ const AdminDashboard = () => {
       color: #6b7280;
     }
 
+    /* Modal/Popup Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #6b7280;
+      transition: all 0.2s ease;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .close-btn:hover {
+      background: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: 1fr;
@@ -451,6 +551,23 @@ const AdminDashboard = () => {
       .employees-table th,
       .employees-table td {
         padding: 12px 16px;
+      }
+
+      .modal-content {
+        width: 95%;
+        max-height: 95vh;
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+      }
+
+      .modal-header h2 {
+        font-size: 18px;
+      }
+
+      .modal-body {
+        padding: 16px;
       }
     }
   `;
@@ -549,7 +666,49 @@ const AdminDashboard = () => {
 
             {/* Department Distribution */}
             <div className="department-section">
-              <h3 className="department-title">Department Distribution</h3>
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "16px",
+                flexWrap: "wrap",
+                gap: "16px"
+              }}>
+                <h3 className="department-title" style={{ marginBottom: 0 }}>Department Distribution</h3>
+                <button 
+                  onClick={handleApproveLeaveClick}
+                  style={{
+                    background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                    color: "white",
+                    border: "none",
+                    padding: "10px 24px",
+                    borderRadius: "10px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    transition: "all 0.3s ease",
+                    boxShadow: "0 2px 4px rgba(249, 115, 22, 0.2)",
+                    letterSpacing: "0.3px"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 6px 12px rgba(249, 115, 22, 0.3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 2px 4px rgba(249, 115, 22, 0.2)";
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  Approve/Reject Leaves
+                </button>
+              </div>
               <div className="department-badges">
                 {Object.entries(stats.departments).map(([dept, count]) => (
                   <div key={dept} className="department-badge">
@@ -636,6 +795,27 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal/Popup for Leaves */}
+      {openLeaves && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', marginRight: '8px' }}>
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Leave Requests Management
+              </h2>
+              <button className="close-btn" onClick={handleCloseModal}>×</button>
+            </div>
+            <div className="modal-body">
+              <Leaves />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -51,13 +51,13 @@ const PrivateRoute = ({
   if (!hasRequiredRole()) {
     // Redirect to appropriate dashboard based on role
     switch(userRole) {
-      case 'admin':
+      case 'Admin':
         return <Navigate to="/admin/dashboard" />;
       case 'manager':
         return <Navigate to="/manager/dashboard" />;
       case 'hr':
         return <Navigate to="/hr/dashboard" />;
-      case 'employee':
+      case 'Employee':
         return <Navigate to="/dashboard" />;
       default:
         return <Navigate to="/unauthorized" />;
