@@ -9,6 +9,7 @@ const Dashboard = () => {
   const loginToken = localStorage.getItem('token');
   const [tokenData, setTokenData] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
+  console.log('this is current time',currentTime)
   const [currentDate, setCurrentDate] = useState('');
   const [todayStatus, setTodayStatus] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -84,6 +85,12 @@ const Dashboard = () => {
   }, [navigate, API_BASE_URL]);
 
   // Define fetchMonthlyStats
+
+
+const handleNavigate=()=>{
+  navigate(`/dashboard/application-form/${tokenData.id}`)
+}
+
   const fetchMonthlyStats = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
@@ -265,9 +272,12 @@ const Dashboard = () => {
         return;
       }
       const location = await getCurrentLocation();
+      console.log('this is current location',location)
+      console.log('this is current location',location)
       const response = await axios.post(`${API_BASE_URL}/attendance/checkin`, {
         latitude: location.latitude,
-        longitude: location.longitude
+        longitude: location.longitude,
+        time:location.time
       }, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
       
       if (response.data.success) {
@@ -875,6 +885,59 @@ const Dashboard = () => {
 
           {/* Welcome Section */}
           <div className="welcome-section">
+          <div>
+  <button 
+    style={{
+      height: "45px",
+      width: "200px",
+      padding: "10px 20px",
+      cursor: "pointer",
+      border: "none",
+      borderRadius: "40px",
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      color: "white",
+      fontSize: "16px",
+      fontWeight: "bold",
+      letterSpacing: "1px",
+      transition: "all 0.3s ease",
+      animation: "blink 1.5s ease-in-out infinite",
+      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+      position: "relative",
+      overflow: "hidden"
+    }}
+    onMouseEnter={(e) => {
+      e.target.style.transform = "scale(1.05)";
+      e.target.style.animation = "none";
+    }}
+    onClick={handleNavigate}
+    onMouseLeave={(e) => {
+      e.target.style.transform = "scale(1)";
+      e.target.style.animation = "blink 1.5s ease-in-out infinite";
+    }}
+  >
+    Apply For Leave
+  </button>
+  
+  <style>
+    {`
+      @keyframes blink {
+        0% {
+          opacity: 1;
+          box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        }
+        50% {
+          opacity: 0.9;
+          box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        }
+      }
+    `}
+  </style>
+</div>
             <h1 className="greeting">{greeting}!</h1>
             <p className="welcome-name">Welcome back, {tokenData?.name || 'Employee'} 👋</p>
             <p className="current-date">

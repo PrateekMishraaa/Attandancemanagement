@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
+  const {Employeid} = useParams();
+  console.log('this is employee id ',Employeid)
   const [formData, setFormData] = useState({
     employeeId: "",
     password: ""
@@ -60,7 +62,7 @@ const Login = () => {
           } else if (user.role === 'Manager' || user.role === 'manager') {
             navigate('/manager-dashboard');
           } else {
-            navigate('/dashboard');
+            navigate(`/dashboard/:${decoded.id}`);
           }
         }, 2000);
       } else {
