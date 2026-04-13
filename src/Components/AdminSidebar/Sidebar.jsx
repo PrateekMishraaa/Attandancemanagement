@@ -35,6 +35,7 @@ import {
   Security as SecurityIcon,
   Menu as MenuIcon,
   CalendarToday,
+  Email,
   // Assessment,
 } from '@mui/icons-material';
 
@@ -99,6 +100,12 @@ export default function AdminSidebar() {
       text: 'Dashboard',
       icon: <DashboardIcon />,
       path: '/admin/dashboard',
+      exact: true,
+    },
+    {
+      text: 'Add Employee',
+      icon: <Email />,
+      path: '/admin/add-employee',
       exact: true,
     },
     

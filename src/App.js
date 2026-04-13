@@ -11,6 +11,7 @@ import AdminDashboard from './Pages/Admin/AdminDashboard.jsx';
 import MonthlyAttandance from './Pages/Admin/MonthlyAttandance.jsx';
 import ApplicationForm from './Components/ApplicationForm/ApplicationForm.jsx';
 import Unauthorized from './Pages/Unauthorized.jsx'; // Create this component
+import AddEmployee from './Pages/Admin/AddEmployee.jsx';
 
 function App() {
   return (
@@ -27,7 +28,9 @@ function App() {
               <Dashboard />
             </PrivateRoute>
           } />
-          
+          <Route path='/admin/add-employee' element={<PrivateRoute>
+            <AddEmployee/>
+          </PrivateRoute>}/>
           <Route path="/history" element={
             <PrivateRoute>
               <History />
