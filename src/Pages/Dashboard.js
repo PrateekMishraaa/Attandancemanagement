@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import DisplayLeaves from '../Components/Leaves/DisplayLeaves';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Dashboard = () => {
   // Office Timings Configuration
   const GRACE_PERIOD_MINUTES = 15;
 
-  const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
+  const API_BASE_URL = 'http://localhost:3500/api';
 
   // Define updateDateTime first (before useEffect)
   const updateDateTime = useCallback(() => {
@@ -869,7 +870,7 @@ const handleNavigate=()=>{
           }}>Logout</button>
         </div>
       </nav>
-
+       
       <div className="dashboard-container">
         <div className="dashboard-content">
           {/* Offline Alert */}
@@ -938,6 +939,7 @@ const handleNavigate=()=>{
     `}
   </style>
 </div>
+
             <h1 className="greeting">{greeting}!</h1>
             <p className="welcome-name">Welcome back, {tokenData?.name || 'Employee'} 👋</p>
             <p className="current-date">
@@ -1163,7 +1165,7 @@ const handleNavigate=()=>{
           </div>
         </div>
       </div>
-
+   <DisplayLeaves/>
       {/* Warning Modal */}
       {showTimeWarning && (
         <div className="modal-overlay" onClick={() => setShowTimeWarning(false)}>
