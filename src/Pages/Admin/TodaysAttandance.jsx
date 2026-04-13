@@ -107,7 +107,7 @@ const TodaysAttandance = () => {
   });
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'http://localhost:3500/api';
+  const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
 
   // Define getAuthHeaders with useCallback
   const getAuthHeaders = useCallback(() => ({
