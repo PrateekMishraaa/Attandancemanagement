@@ -1,57 +1,87 @@
 import React, { useState } from 'react';
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import Swal from "sweetalert2"
 import { useParams } from "react-router-dom";
 
 const EmployeWork = () => {
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0], // Set default date
+    date: new Date().toISOString().split('T')[0],
     project_name: "",
     taskOverview: ""
   });
-console.log('form data',formData)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const { id } = useParams();
-  console.log('Employee ID:', id);
+  
+  // CRITICAL FIX: Remove colon from ID if present
+  const cleanId = id?.startsWith(':') ? id.substring(1) : id;
+  
+  console.log('Original ID from params:', id);
+  console.log('Cleaned ID for API:', cleanId);
   
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!formData.date || !formData.project_name || !formData.taskOverview) {
-    return toast.error('All fields are required');
-  }
-  
-  try {
-    // Remove the colon from the URL - DON'T put : before ${id}
-    const response = await axios.post(
-      `http://localhost:3500/api/work/todays-work/${id}`,  // ✅ No colon here
-      formData
-    );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    console.log('Response:', response.data);
+    if (!formData.date || !formData.project_name || !formData.taskOverview) {
+      return toast.error('All fields are required');
+    }
     
-    setFormData({
-      date: new Date().toISOString().split('T')[0],
-      project_name: "",
-      taskOverview: ""
-    });
+    if (formData.taskOverview.length < 20) {
+      return toast.error('Task description must be at least 20 characters');
+    }
     
-    toast.success('Thank you for submitting your today\'s task!');
+    setIsSubmitting(true);
     
-  } catch(error) {
-    console.log('Error:', error);
-    toast.error('Internal server error');
-  }
-};
+    try {
+      // Use cleanId instead of id
+      const apiUrl = `http://localhost:3500/api/work/todays-work/${cleanId}`;
+      console.log('Calling API:', apiUrl);
+      
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Success response:', response.data);
+      Swal.fire('Thankyou For Submiting Your Todays Task')
+      setFormData({
+        date: new Date().toISOString().split('T')[0],
+        project_name: "",
+        taskOverview: ""
+      });
+      
+      toast.success('Thank you for submitting your today\'s task!');
+      
+    } catch(error) {
+      console.error('Error details:', error);
+      
+      if (error.response) {
+        const errorMessage = error.response.data.message || 'Failed to submit work';
+        toast.error(errorMessage);
+        
+        if (error.response.status === 409) {
+          toast.error('You have already submitted work for today!');
+        }
+      } else if (error.request) {
+        toast.error('Cannot connect to server. Please check if backend is running on port 5000');
+      } else {
+        toast.error('Error submitting form. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
   return (
     <>
       <div style={styles.container}>
         <div style={styles.innerContainer}>
-          {/* Header */}
           <div style={styles.header}>
             <div style={styles.iconWrapper}>
               <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,18 +92,14 @@ console.log('form data',formData)
             <p style={styles.subtitle}>Submit your today's work progress</p>
           </div>
 
-          {/* Main Form Card */}
           <div style={styles.card}>
-            {/* Form Header */}
             <div style={styles.cardHeader}>
               <h2 style={styles.cardTitle}>Work Submission Form</h2>
               <p style={styles.cardSubtitle}>Fill in your daily work details</p>
             </div>
 
-            {/* Form Body */}
             <form onSubmit={handleSubmit}>
               <div style={styles.cardBody}>
-                {/* Date Field */}
                 <div style={styles.row}>
                   <div style={styles.field}>
                     <label style={styles.label}>
@@ -88,13 +114,9 @@ console.log('form data',formData)
                         style={styles.input}
                         required
                       />
-                      <svg style={styles.calendarIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
                     </div>
                   </div>
 
-                  {/* Project Name Field */}
                   <div style={styles.field}>
                     <label style={styles.label}>
                       Project Name <span style={styles.required}>*</span>
@@ -111,7 +133,6 @@ console.log('form data',formData)
                   </div>
                 </div>
 
-                {/* Task Description */}
                 <div style={styles.field}>
                   <label style={styles.label}>
                     Task Description <span style={styles.required}>*</span>
@@ -125,15 +146,25 @@ console.log('form data',formData)
                     style={styles.textarea}
                     required
                   />
-                  <p style={styles.hintText}>
+                  <p style={{
+                    ...styles.hintText,
+                    color: formData.taskOverview.length >= 20 ? '#10b981' : '#9ca3af'
+                  }}>
                     {formData.taskOverview.length}/20 characters minimum
                   </p>
                 </div>
 
-                {/* Submit Button */}
                 <div style={styles.buttonWrapper}>
-                  <button type="submit" style={styles.submitButton}>
-                    Submit Work Update
+                  <button 
+                    type="submit" 
+                    style={{
+                      ...styles.submitButton,
+                      opacity: isSubmitting ? 0.7 : 1,
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit Work Update'}
                   </button>
                   <p style={styles.disclaimer}>
                     By submitting, you confirm that this work update is accurate
@@ -231,10 +262,6 @@ const styles = {
   required: {
     color: '#ef4444',
   },
-  optionalText: {
-    color: '#9ca3af',
-    fontSize: '12px',
-  },
   inputWrapper: {
     position: 'relative',
   },
@@ -247,15 +274,6 @@ const styles = {
     outline: 'none',
     transition: 'all 0.2s',
     boxSizing: 'border-box',
-  },
-  calendarIcon: {
-    position: 'absolute',
-    right: '12px',
-    top: '10px',
-    width: '20px',
-    height: '20px',
-    color: '#9ca3af',
-    pointerEvents: 'none',
   },
   textarea: {
     width: '100%',
@@ -295,24 +313,5 @@ const styles = {
     marginTop: '12px',
   },
 };
-
-// Add hover effects using JavaScript
-const addHoverEffects = () => {
-  const style = document.createElement('style');
-  style.textContent = `
-    button:hover {
-      transform: scale(1.02);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    input:focus, textarea:focus {
-      outline: none;
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-  `;
-  document.head.appendChild(style);
-};
-
-addHoverEffects();
 
 export default EmployeWork;
