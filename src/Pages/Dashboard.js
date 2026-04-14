@@ -4,13 +4,15 @@ import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 import DisplayLeaves from '../Components/Leaves/DisplayLeaves';
+import EmployeWork from '../Components/EmployeWork/EmployeWork';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [openWorkEmployee, setOpenWorkEmployee] = useState(false);
   const loginToken = localStorage.getItem('token');
   const [tokenData, setTokenData] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
-  console.log('this is current time',currentTime)
+  console.log('this is current time', currentTime);
   const [currentDate, setCurrentDate] = useState('');
   const [todayStatus, setTodayStatus] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -26,7 +28,7 @@ const Dashboard = () => {
   // Office Timings Configuration
   const GRACE_PERIOD_MINUTES = 15;
 
-  const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
+  const API_BASE_URL = 'http://localhost:3500/api';
 
   // Define updateDateTime first (before useEffect)
   const updateDateTime = useCallback(() => {
@@ -86,11 +88,9 @@ const Dashboard = () => {
   }, [navigate, API_BASE_URL]);
 
   // Define fetchMonthlyStats
-
-
-const handleNavigate=()=>{
-  navigate(`/dashboard/application-form/${tokenData.id}`)
-}
+  const handleNavigate = () => {
+    navigate(`/dashboard/application-form/${tokenData.id}`);
+  };
 
   const fetchMonthlyStats = useCallback(async () => {
     try {
@@ -273,12 +273,11 @@ const handleNavigate=()=>{
         return;
       }
       const location = await getCurrentLocation();
-      console.log('this is current location',location)
-      console.log('this is current location',location)
+      console.log('this is current location', location);
       const response = await axios.post(`${API_BASE_URL}/attendance/checkin`, {
         latitude: location.latitude,
         longitude: location.longitude,
-        time:location.time
+        time: location.time
       }, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
       
       if (response.data.success) {
@@ -849,6 +848,120 @@ const handleNavigate=()=>{
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
           }
+
+          /* Popup Modal Styles */
+          .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+          }
+
+          .popup-container {
+            background: white;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s ease;
+          }
+
+          .popup-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          }
+
+          .popup-header h2 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+
+          .close-popup {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+          }
+
+          .close-popup:hover {
+            background: rgba(239, 68, 68, 0.8);
+            transform: rotate(90deg);
+          }
+
+          .popup-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(85vh - 80px);
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+
+          @keyframes slideUp {
+            from {
+              transform: translateY(50px);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+
+          /* Employee Work Button */
+          .employee-work-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto;
+            font-size: 16px;
+          }
+
+          .employee-work-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+          }
         `}
       </style>
 
@@ -886,59 +999,59 @@ const handleNavigate=()=>{
 
           {/* Welcome Section */}
           <div className="welcome-section">
-          <div>
-  <button 
-    style={{
-      height: "45px",
-      width: "200px",
-      padding: "10px 20px",
-      cursor: "pointer",
-      border: "none",
-      borderRadius: "40px",
-      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      color: "white",
-      fontSize: "16px",
-      fontWeight: "bold",
-      letterSpacing: "1px",
-      transition: "all 0.3s ease",
-      animation: "blink 1.5s ease-in-out infinite",
-      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-      position: "relative",
-      overflow: "hidden"
-    }}
-    onMouseEnter={(e) => {
-      e.target.style.transform = "scale(1.05)";
-      e.target.style.animation = "none";
-    }}
-    onClick={handleNavigate}
-    onMouseLeave={(e) => {
-      e.target.style.transform = "scale(1)";
-      e.target.style.animation = "blink 1.5s ease-in-out infinite";
-    }}
-  >
-    Apply For Leave
-  </button>
-  
-  <style>
-    {`
-      @keyframes blink {
-        0% {
-          opacity: 1;
-          box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
-        }
-        50% {
-          opacity: 0.9;
-          box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
-          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        }
-        100% {
-          opacity: 1;
-          box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
-        }
-      }
-    `}
-  </style>
-</div>
+            <div>
+              <button 
+                style={{
+                  height: "45px",
+                  width: "200px",
+                  padding: "10px 20px",
+                  cursor: "pointer",
+                  border: "none",
+                  borderRadius: "40px",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  letterSpacing: "1px",
+                  transition: "all 0.3s ease",
+                  animation: "blink 1.5s ease-in-out infinite",
+                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                  position: "relative",
+                  overflow: "hidden"
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "scale(1.05)";
+                  e.target.style.animation = "none";
+                }}
+                onClick={handleNavigate}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "scale(1)";
+                  e.target.style.animation = "blink 1.5s ease-in-out infinite";
+                }}
+              >
+                Apply For Leave
+              </button>
+              
+              <style>
+                {`
+                  @keyframes blink {
+                    0% {
+                      opacity: 1;
+                      box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+                    }
+                    50% {
+                      opacity: 0.9;
+                      box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+                      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+                    }
+                    100% {
+                      opacity: 1;
+                      box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+                    }
+                  }
+                `}
+              </style>
+            </div>
 
             <h1 className="greeting">{greeting}!</h1>
             <p className="welcome-name">Welcome back, {tokenData?.name || 'Employee'} 👋</p>
@@ -951,6 +1064,19 @@ const handleNavigate=()=>{
               </svg>
               {currentDate}
             </p>
+          </div>
+
+          {/* Employee Work Button */}
+          <div style={{ textAlign: 'center' }}>
+            <button 
+              className="employee-work-btn"
+              onClick={() => setOpenWorkEmployee(true)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 13.5A7.5 7.5 0 0113.5 21M12 2a10 10 0 00-7.07 17.07L12 12l7.07 7.07A10 10 0 0012 2z" />
+              </svg>
+              Submit Today's Employee Work
+            </button>
           </div>
 
           {/* Time Card */}
@@ -1165,7 +1291,31 @@ const handleNavigate=()=>{
           </div>
         </div>
       </div>
-   <DisplayLeaves/>
+      
+      <DisplayLeaves/>
+
+      {/* Employee Work Popup Modal */}
+      {openWorkEmployee && (
+        <div className="popup-overlay" onClick={() => setOpenWorkEmployee(false)}>
+          <div className="popup-container" onClick={(e) => e.stopPropagation()}>
+            <div className="popup-header">
+              <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 13.5A7.5 7.5 0 0113.5 21M12 2a10 10 0 00-7.07 17.07L12 12l7.07 7.07A10 10 0 0012 2z" />
+                </svg>
+                Employee Work Details
+              </h2>
+              <button className="close-popup" onClick={() => setOpenWorkEmployee(false)}>
+                ×
+              </button>
+            </div>
+            <div className="popup-body">
+              <EmployeWork />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Warning Modal */}
       {showTimeWarning && (
         <div className="modal-overlay" onClick={() => setShowTimeWarning(false)}>

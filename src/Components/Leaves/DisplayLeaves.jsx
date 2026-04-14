@@ -1,14 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import {useNavigate} from "react-router-dom"
 
 // API Service Configuration
-const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3500/api';
 
 // API Service Class
 class LeaveService {
     // Get all leaves for a specific employee by employee ID
     static async getLeavesByEmployeeId(employeeId) {
+        console.log('this is employee id from display leave',employeeId)
         try {
             const response = await axios.get(`${API_BASE_URL}/leave/employee/${employeeId}/all-leaves`);
             return response.data;
@@ -64,7 +66,9 @@ class LeaveService {
 }
 
 const DisplayLeaves = () => {
-    const { id } = useParams(); // Can be employee ID or leave application ID
+    const navigate = useNavigate()
+    const { id } = useParams(); 
+    console.log('this is upper id',id)
     const [leaves, setLeaves] = useState([]);
     const [singleLeave, setSingleLeave] = useState(null);
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'single'
@@ -72,6 +76,12 @@ const DisplayLeaves = () => {
     const [loading, setLoading] = useState(false);
     const [employeeId, setEmployeeId] = useState(null);
     console.log('this is employee id',employeeId)
+
+    const handleNavigateLeave = () => {
+        // Use the employeeId from state if available, otherwise use the id from params
+        const empId = employeeId || id;
+        navigate(`/dashboard/application-form/${empId}`);
+    }
 
     useEffect(() => {
         if (id) {
@@ -233,6 +243,7 @@ const DisplayLeaves = () => {
                 getStatusColor={getStatusColor}
                 getStatusBgColor={getStatusBgColor}
                 calculateDays={calculateDays}
+                onApplyLeave={handleNavigateLeave}
             />
         );
     }
@@ -691,7 +702,7 @@ const SingleLeaveView = ({ leave, formatDate, formatDateTime, getStatusColor, ge
 };
 
 // Component for list view of leaves
-const LeavesListView = ({ leaves, employeeId, formatDate, getStatusColor, getStatusBgColor, calculateDays }) => {
+const LeavesListView = ({ leaves, employeeId, formatDate, getStatusColor, getStatusBgColor, calculateDays, onApplyLeave }) => {
     return (
         <>
             <style>
@@ -853,6 +864,9 @@ const LeavesListView = ({ leaves, employeeId, formatDate, getStatusColor, getSta
                         border-radius: 8px;
                         font-weight: 500;
                         transition: transform 0.2s;
+                        border: none;
+                        cursor: pointer;
+                        font-size: 14px;
                     }
 
                     .apply-leave-btn:hover {
@@ -887,9 +901,9 @@ const LeavesListView = ({ leaves, employeeId, formatDate, getStatusColor, getSta
                         )}
                     </div>
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <Link to={`/dashboard/application-form/:${employeeId}`} className="apply-leave-btn">
+                        <button onClick={onApplyLeave} className="apply-leave-btn">
                             + Apply for Leave
-                        </Link>
+                        </button>
                         <Link to="/dashboard" className="back-button">
                             ← Back to Dashboard
                         </Link>
@@ -947,9 +961,9 @@ const LeavesListView = ({ leaves, employeeId, formatDate, getStatusColor, getSta
                                             </span>
                                         </td>
                                         <td>
-                                            {/* <Link to={`/leave/${leave._id}`} className="view-link">
+                                            <Link to={`/leave/${leave._id}`} className="view-link">
                                                 View Details →
-                                            </Link> */}
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}
@@ -962,9 +976,9 @@ const LeavesListView = ({ leaves, employeeId, formatDate, getStatusColor, getSta
                             <div className="no-data-icon">📋</div>
                             <h3>No Leave Applications Found</h3>
                             <p>You haven't submitted any leave applications yet.</p>
-                            <Link to={`/dashboard/application-form/:${employeeId}`} className="apply-leave-btn" style={{ marginTop: '20px', display: 'inline-block' }}>
+                            <button onClick={onApplyLeave} className="apply-leave-btn" style={{ marginTop: '20px', display: 'inline-block' }}>
                                 Apply for Leave
-                            </Link>
+                            </button>
                         </div>
                     </div>
                 )}

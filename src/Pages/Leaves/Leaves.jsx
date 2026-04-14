@@ -18,7 +18,7 @@ const Leaves = () => {
     const fetchLeaves = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('https://attendancemanagementbackend-gg9v.onrender.com/api/leave/getAllLeaves');
+            const response = await axios.get('http://localhost:3500/api/leave/getAllLeaves');
             console.log('All leaves:', response.data);
             setLeaves(response.data.data || response.data.allLeaves || []);
             setError(false);
@@ -40,7 +40,7 @@ const Leaves = () => {
         
         try {
             const response = await axios.put(
-                `https://attendancemanagementbackend-gg9v.onrender.com/api/leave/update-leave/${leaveId}`,
+                `http://localhost:3500/api/leave/update-leave/${leaveId}`,
                 { 
                     Status: newStatus,
                     Remarks: updateRemarks
