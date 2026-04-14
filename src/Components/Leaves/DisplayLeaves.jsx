@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import {useNavigate} from "react-router-dom"
 
 // API Service Configuration
-const API_BASE_URL = 'http://localhost:3500/api';
+const API_BASE_URL = 'https://attendancemanagementbackend-gg9v.onrender.com/api';
 
 // API Service Class
 class LeaveService {
