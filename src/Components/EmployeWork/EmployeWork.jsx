@@ -39,7 +39,7 @@ const EmployeWork = () => {
     
     try {
       // Use cleanId instead of id
-      const apiUrl = `https://attendancemanagementbackend-gg9v.onrender.com/api/work/todays-work/${cleanId}`;
+      const apiUrl = `https://attendancemanagementbackend-oqfl.onrender.com/api/work/todays-work/${cleanId}`;
       console.log('Calling API:', apiUrl);
       
       const response = await axios.post(apiUrl, formData, {

@@ -13,6 +13,7 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import TaskIcon from '@mui/icons-material/Task';
 import {
   Dashboard as DashboardIcon,
   // People as PeopleIcon,
@@ -106,6 +107,12 @@ export default function AdminSidebar() {
       text: 'Add Employee',
       icon: <Email />,
       path: '/admin/add-employee',
+      exact: true,
+    },
+      {
+      text: 'View Task',
+      icon: <TaskIcon />,
+      path: '/admin/view-task-details',
       exact: true,
     },
     
