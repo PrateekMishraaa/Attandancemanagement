@@ -74,19 +74,23 @@ const StatCard = styled(Card)(({ theme }) => ({
 const MonthlyAttandance = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [lateEmployees, setLateEmployees] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [totalEmp, setTotalEmp] = useState([]);
+  const [employeesLoading, setEmployeesLoading] = useState(true);
+  const [lateEmployeesLoading, setLateEmployeesLoading] = useState(false);
+  const [statsLoading, setStatsLoading] = useState(false);
   const [stats, setStats] = useState({
-    totalEmployees: 45,
-    presentToday: 38,
-    lateToday: 3,
-    absentToday: 7,
-    attendanceRate: 84.4
+    totalEmployees: 0,
+    presentToday: 0,
+    lateToday: 0,
+    absentToday: 0,
+    attendanceRate: 0
   });
   const navigate = useNavigate();
 
+  // FIXED: Remove duplicate /api/api
   const API_BASE_URL = 'https://attendancemanagementbackend-oqfl.onrender.com/api';
 
-  // Define getAuthHeaders with useCallback to prevent recreation on every render
+  // Define getAuthHeaders with useCallback
   const getAuthHeaders = useCallback(() => ({
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -94,45 +98,113 @@ const MonthlyAttandance = () => {
     }
   }), []);
 
-  // Define fetchTodayLateEmployees with useCallback
+  // Fetch all employees
+  const fetchEmployees = useCallback(async () => {
+    try {
+      setEmployeesLoading(true);
+      const response = await axios.get(`${API_BASE_URL}/admin/employees`, getAuthHeaders());
+      console.log('Employees response:', response.data);
+      
+      let employeesData = [];
+      if (Array.isArray(response.data)) {
+        employeesData = response.data;
+      } else if (response.data.data && Array.isArray(response.data.data)) {
+        employeesData = response.data.data;
+      } else if (response.data.employees && Array.isArray(response.data.employees)) {
+        employeesData = response.data.employees;
+      } else if (response.data.success && response.data.data) {
+        employeesData = response.data.data;
+      }
+      
+      setTotalEmp(employeesData);
+      
+      // Update total employees count in stats
+      setStats(prev => ({
+        ...prev,
+        totalEmployees: employeesData.length
+      }));
+      
+      console.log('Total employees count:', employeesData.length);
+      
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+      console.error('Error details:', error.response?.data);
+      setTotalEmp([]);
+    } finally {
+      setEmployeesLoading(false);
+    }
+  }, [API_BASE_URL, getAuthHeaders]);
+
+  // Fetch today's late employees
   const fetchTodayLateEmployees = useCallback(async () => {
     try {
+      setLateEmployeesLoading(true);
       const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
+      console.log('Late employees response:', response.data);
+      
       if (response.data.success) {
-        setLateEmployees(response.data.data);
-        setStats(prev => ({ ...prev, lateToday: response.data.data.length }));
+        const lateData = response.data.data || [];
+        setLateEmployees(lateData);
+        
+        // Update late count in stats
+        setStats(prev => ({
+          ...prev,
+          lateToday: lateData.length
+        }));
+      } else {
+        console.error('API returned error:', response.data.message);
+        setLateEmployees([]);
       }
     } catch (error) {
       console.error('Error fetching late employees:', error);
-      // Demo data for display
-      setLateEmployees([
-        { employeeId: 'EMP001', name: 'Parait Kumar', department: 'IT', checkInTime: '10:30:00', lateByMinutes: 15 },
-        { employeeId: 'EMP0000', name: 'Prateek', department: 'IT', checkInTime: '10:16:24', lateByMinutes: 1 },
-        { employeeId: 'EMP0004', name: 'Pratyush', department: 'IT', checkInTime: '14:01:50', lateByMinutes: 226 }
-      ]);
+      console.error('Error details:', error.response?.data);
+      setLateEmployees([]);
+    } finally {
+      setLateEmployeesLoading(false);
     }
   }, [API_BASE_URL, getAuthHeaders]);
 
-  // Define fetchDashboardStats with useCallback
+  // Fetch dashboard stats (present, absent, attendance rate)
   const fetchDashboardStats = useCallback(async () => {
-    setLoading(true);
     try {
+      setStatsLoading(true);
       const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
-      if (response.data.success) {
-        setStats(response.data.data);
+      console.log('Dashboard stats response:', response.data);
+      
+      if (response.data.success && response.data.data) {
+        setStats(prev => ({
+          ...prev,
+          presentToday: response.data.data.presentToday || 0,
+          absentToday: response.data.data.absentToday || 0,
+          attendanceRate: response.data.data.attendanceRate || 0,
+          totalEmployees: prev.totalEmployees || response.data.data.totalEmployees || 0
+        }));
+        console.log('Stats updated:', stats);
+      } else {
+        console.error('Invalid response structure:', response.data);
       }
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('Error fetching dashboard stats:', error);
+      console.error('Error details:', error.response?.data);
     } finally {
-      setLoading(false);
+      setStatsLoading(false);
     }
   }, [API_BASE_URL, getAuthHeaders]);
 
-  // useEffect with proper dependencies
+  // Fetch all data
+  const fetchAllData = useCallback(async () => {
+    console.log('Fetching all data...');
+    await Promise.all([
+      fetchEmployees(),
+      fetchTodayLateEmployees(),
+      fetchDashboardStats()
+    ]);
+    console.log('All data fetched');
+  }, [fetchEmployees, fetchTodayLateEmployees, fetchDashboardStats]);
+
   useEffect(() => {
-    fetchTodayLateEmployees();
-    fetchDashboardStats();
-  }, [fetchTodayLateEmployees, fetchDashboardStats]);
+    fetchAllData();
+  }, [fetchAllData]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -141,6 +213,15 @@ const MonthlyAttandance = () => {
   const drawer = (
     <Sidebar/>
   );
+
+  // Calculate percentage for display
+  const presentPercentage = stats.totalEmployees > 0 
+    ? ((stats.presentToday / stats.totalEmployees) * 100).toFixed(1) 
+    : 0;
+    
+  const absentPercentage = stats.totalEmployees > 0 
+    ? ((stats.absentToday / stats.totalEmployees) * 100).toFixed(1) 
+    : 0;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -218,12 +299,12 @@ const MonthlyAttandance = () => {
                       Total Employees
                     </Typography>
                     <Typography variant="h3" fontWeight="bold" sx={{ color: '#667eea' }}>
-                      {stats.totalEmployees}
+                      {employeesLoading ? <CircularProgress size={30} /> : stats.totalEmployees}
                     </Typography>
                     <Box display="flex" alignItems="center" mt={1}>
                       <ArrowUpIcon sx={{ fontSize: 16, color: '#4caf50' }} />
                       <Typography variant="caption" color="success.main" sx={{ ml: 0.5 }}>
-                        +5% from last month
+                        Active employees
                       </Typography>
                     </Box>
                   </Box>
@@ -245,10 +326,10 @@ const MonthlyAttandance = () => {
                       Present Today
                     </Typography>
                     <Typography variant="h3" fontWeight="bold" sx={{ color: '#4caf50' }}>
-                      {stats.presentToday}
+                      {statsLoading ? <CircularProgress size={30} /> : stats.presentToday}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {((stats.presentToday / stats.totalEmployees) * 100).toFixed(1)}% of total
+                      {presentPercentage}% of total
                     </Typography>
                   </Box>
                   <Avatar sx={{ bgcolor: alpha('#4caf50', 0.1), color: '#4caf50' }}>
@@ -269,7 +350,7 @@ const MonthlyAttandance = () => {
                       Late Today
                     </Typography>
                     <Typography variant="h3" fontWeight="bold" sx={{ color: '#ff9800' }}>
-                      {stats.lateToday}
+                      {lateEmployeesLoading ? <CircularProgress size={30} /> : stats.lateToday}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       Need attention
@@ -293,10 +374,10 @@ const MonthlyAttandance = () => {
                       Absent Today
                     </Typography>
                     <Typography variant="h3" fontWeight="bold" sx={{ color: '#f44336' }}>
-                      {stats.absentToday}
+                      {statsLoading ? <CircularProgress size={30} /> : stats.absentToday}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {((stats.absentToday / stats.totalEmployees) * 100).toFixed(1)}% absent
+                      {absentPercentage}% absent
                     </Typography>
                   </Box>
                   <Avatar sx={{ bgcolor: alpha('#f44336', 0.1), color: '#f44336' }}>
@@ -325,7 +406,7 @@ const MonthlyAttandance = () => {
             />
           </Box>
 
-          {loading ? (
+          {lateEmployeesLoading ? (
             <Box display="flex" justifyContent="center" py={5}>
               <CircularProgress />
             </Box>
@@ -348,16 +429,16 @@ const MonthlyAttandance = () => {
                 </TableHead>
                 <TableBody>
                   {lateEmployees.map((employee, index) => (
-                    <TableRow key={index} hover>
+                    <TableRow key={employee._id || index} hover>
                       <TableCell>
                         <Typography fontWeight="medium">
-                          {employee.employeeId}
+                          {employee.employeeId || employee.employee_id || 'N/A'}
                         </Typography>
                       </TableCell>
-                      <TableCell>{employee.name}</TableCell>
+                      <TableCell>{employee.name || employee.employeeName || 'N/A'}</TableCell>
                       <TableCell>
                         <Chip
-                          label={employee.department}
+                          label={employee.department || 'N/A'}
                           size="small"
                           sx={{ bgcolor: '#e8eaf6', color: '#667eea', fontWeight: 600 }}
                         />
@@ -365,12 +446,12 @@ const MonthlyAttandance = () => {
                       <TableCell>
                         <Box display="flex" alignItems="center" gap={1}>
                           <LateIcon sx={{ fontSize: 16, color: '#ff9800' }} />
-                          {employee.checkInTime}
+                          {employee.checkInTime || employee.check_in_time || employee.time || 'N/A'}
                         </Box>
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={`${employee.lateByMinutes} minutes`}
+                          label={`${employee.lateByMinutes || employee.late_minutes || 0} minutes`}
                           size="small"
                           sx={{ bgcolor: '#fff3e0', color: '#ff9800', fontWeight: 600 }}
                         />
@@ -430,7 +511,7 @@ const MonthlyAttandance = () => {
                   </Typography>
                 </Box>
                 <Typography variant="body2" color="textSecondary">
-                  3 pending leave requests awaiting approval
+                  View and manage leave requests
                 </Typography>
                 <Button
                   fullWidth

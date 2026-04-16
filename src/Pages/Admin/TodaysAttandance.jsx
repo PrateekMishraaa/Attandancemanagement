@@ -96,6 +96,8 @@ const StatCard = ({ title, value, icon, color, change }) => (
 
 const TodaysAttandance = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const[totalEmp,setTotalEmp] = useState([])
+  // console.log('this is total emp')
   const [lateEmployees, setLateEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
@@ -116,6 +118,21 @@ const TodaysAttandance = () => {
       'Content-Type': 'application/json'
     }
   }), []);
+
+
+useEffect(()=>{
+    const fetchEmployee = async()=>{
+      try{
+        const response = await axios.get('https://attendancemanagementbackend-oqfl.onrender.com/api/admin/employees')
+        console.log('response employee',response.data)
+        setTotalEmp(response.data)
+      }catch(error){
+        console.log('error fetching employee',error)
+        
+      }
+    }
+    fetchEmployee()
+},[])
 
   // Define fetchTodayLateEmployees with useCallback (before useEffect)
   const fetchTodayLateEmployees = useCallback(async () => {
@@ -225,7 +242,7 @@ const TodaysAttandance = () => {
           <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Total Employees"
-              value={stats.totalEmployees || 45}
+             value={totalEmp.length}
               icon={<EmployeesIcon />}
               color="#667eea"
               change={5}
