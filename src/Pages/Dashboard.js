@@ -5,6 +5,7 @@ import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 import DisplayLeaves from '../Components/Leaves/DisplayLeaves';
 import EmployeWork from '../Components/EmployeWork/EmployeWork';
+import Cards from '../Components/TaskCards/Cards';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -1065,7 +1066,7 @@ const Dashboard = () => {
               {currentDate}
             </p>
           </div>
-
+                  
           {/* Employee Work Button */}
           <div style={{ textAlign: 'center' }}>
             <button 
@@ -1272,7 +1273,9 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
+<div style={{height:"auto",width:"auto"}}>
+                    <Cards/>
+                  </div>
           {/* Security Notice */}
           <div className="security-notice">
             <div className="security-text">

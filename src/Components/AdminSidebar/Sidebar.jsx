@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import TaskIcon from '@mui/icons-material/Task';
+import { TaskTwoTone } from '@mui/icons-material';
 import {
   Dashboard as DashboardIcon,
   // People as PeopleIcon,
@@ -37,6 +38,7 @@ import {
   Menu as MenuIcon,
   CalendarToday,
   Email,
+  Task,
   // Assessment,
 } from '@mui/icons-material';
 
@@ -107,6 +109,12 @@ export default function AdminSidebar() {
       text: 'Add Employee',
       icon: <Email />,
       path: '/admin/add-employee',
+      exact: true,
+    },
+     {
+      text: 'Add Task to Employees',
+      icon: <TaskTwoTone/>,
+      path: '/admin/add-task',
       exact: true,
     },
       {

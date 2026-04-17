@@ -14,6 +14,7 @@ import Unauthorized from './Pages/Unauthorized.jsx'; // Create this component
 import AddEmployee from './Pages/Admin/AddEmployee.jsx';
 import ViewTaskDetails from './Pages/Admin/ViewTaskDetails.jsx';
 import ViewEmployeeTask from './Pages/Admin/ViewEmployeeTask.jsx';
+import Task from './Pages/Admin/Task.jsx';
 
 function App() {
   return (
@@ -63,7 +64,9 @@ function App() {
               <TodaysAttandance />
             </PrivateRoute>
           } />
-          
+          <Route path='/admin/add-task' element={<PrivateRoute>
+            <Task/>
+          </PrivateRoute>}/>
           <Route path='/admin/monthly-attandance' element={
             <PrivateRoute allowedRoles={['Admin']}>
               <MonthlyAttandance />
