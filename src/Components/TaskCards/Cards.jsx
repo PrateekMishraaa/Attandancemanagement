@@ -21,6 +21,9 @@ useEffect(()=>{
     fetchTaskData()
 },[])
 
+const handleUpdateTask=()=>{
+    alert('working')
+}
   const getPriorityColor = (priority) => {
     switch(priority) {
       case 'high': return { bg: '#ffebee', color: '#c62828', icon: '#c62828' }
@@ -175,6 +178,7 @@ useEffect(()=>{
                   <span style={{ fontSize: "14px", color: "#555" }}>
                     <strong>Project Manager:</strong> <span style={{color:"blue",fontWeight:"bold"}}>{task.projectManager}</span>
                   </span>
+                <button onClick={handleUpdateTask} style={{height:"20px",width:"80px",borderRadius:"6px", cursor:"pointer",backgroundColor:"blue",color:"white",fontWeight:"bold"}}>Complete</button>
                 </div>
             </div>
           )

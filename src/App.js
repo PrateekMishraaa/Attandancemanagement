@@ -5,7 +5,7 @@ import PrivateRoute from './Components/Common/PrivateRoute.js';
 import Login from './Pages/Login.js';
 import Dashboard from './Pages/Dashboard.js';
 import History from './Pages/History.js';
-import Profile from './Pages/Profile.js';
+import Profile from './Pages/Profile/Profile.jsx';
 import TodaysAttandance from "./Pages/Admin/TodaysAttandance.jsx"
 import AdminDashboard from './Pages/Admin/AdminDashboard.jsx';
 import MonthlyAttandance from './Pages/Admin/MonthlyAttandance.jsx';
@@ -64,6 +64,9 @@ function App() {
               <TodaysAttandance />
             </PrivateRoute>
           } />
+          <Route path='/dashboard/profile/:id' element={<PrivateRoute>
+              <Profile/>
+          </PrivateRoute>}/>  
           <Route path='/admin/add-task' element={<PrivateRoute>
             <Task/>
           </PrivateRoute>}/>

@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 import DisplayLeaves from '../Components/Leaves/DisplayLeaves';
+import { FaUser } from "react-icons/fa";
 import EmployeWork from '../Components/EmployeWork/EmployeWork';
 import Cards from '../Components/TaskCards/Cards';
 
 const Dashboard = () => {
+  const {id} = useParams()
+  console.log('this is id for profile',id)
   const navigate = useNavigate();
   const [openWorkEmployee, setOpenWorkEmployee] = useState(false);
   const loginToken = localStorage.getItem('token');
@@ -65,6 +68,10 @@ const Dashboard = () => {
     };
   }, []);
 
+
+  const handleNavigateProfile=()=>{
+    navigate(`/dashboard/profile/${id}`)
+  }
   // Define fetchTodayStatus (before useEffect that uses it)
   const fetchTodayStatus = useCallback(async () => {
     try {
@@ -982,6 +989,9 @@ const Dashboard = () => {
             navigate('/login');
             toast.success('Logged out successfully');
           }}>Logout</button>
+        <div >
+          <FaUser onClick={handleNavigateProfile} style={{fontSize:"20px",color:"white",cursor:"pointer"}}/>
+        </div>
         </div>
       </nav>
        
