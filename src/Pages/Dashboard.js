@@ -10,18 +10,19 @@ import Cards from '../Components/TaskCards/Cards';
 
 const Dashboard = () => {
   const {id} = useParams()
-  console.log('this is id for profile',id)
+  // console.log('this is id for profile',id)
   const navigate = useNavigate();
   const [openWorkEmployee, setOpenWorkEmployee] = useState(false);
   const loginToken = localStorage.getItem('token');
   const [tokenData, setTokenData] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
-  console.log('this is current time', currentTime);
+  // console.log('this is current time', currentTime);
   const [currentDate, setCurrentDate] = useState('');
   const [todayStatus, setTodayStatus] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState(true);
   const [locationPermission, setLocationPermission] = useState(null);
+  // console.log('this is location permission',locationPermission)
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [greeting, setGreeting] = useState('');
@@ -32,7 +33,7 @@ const Dashboard = () => {
   // Office Timings Configuration
   const GRACE_PERIOD_MINUTES = 15;
 
-  const API_BASE_URL = 'https://attendancemanagementbackend-oqfl.onrender.com/api';
+  const API_BASE_URL = 'http://localhost:3500/api';
 
   // Define updateDateTime first (before useEffect)
   const updateDateTime = useCallback(() => {
@@ -281,13 +282,14 @@ const Dashboard = () => {
         return;
       }
       const location = await getCurrentLocation();
-      console.log('this is current location', location);
+      // console.log('this is current office location',location)
+      // console.log('this is current location', location);
       const response = await axios.post(`${API_BASE_URL}/attendance/checkin`, {
         latitude: location.latitude,
         longitude: location.longitude,
         time: location.time
       }, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
-      
+      // console.log('this is dummy response from employee',response)
       if (response.data.success) {
         toast.success('✅ ' + response.data.message);
         fetchTodayStatus();

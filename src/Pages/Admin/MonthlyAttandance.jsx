@@ -88,7 +88,7 @@ const MonthlyAttandance = () => {
   const navigate = useNavigate();
 
   // FIXED: Remove duplicate /api/api
-  const API_BASE_URL = 'https://attendancemanagementbackend-oqfl.onrender.com/api';
+  const API_BASE_URL = 'http://localhost:3500/api';
 
   // Define getAuthHeaders with useCallback
   const getAuthHeaders = useCallback(() => ({
@@ -103,7 +103,7 @@ const MonthlyAttandance = () => {
     try {
       setEmployeesLoading(true);
       const response = await axios.get(`${API_BASE_URL}/admin/employees`, getAuthHeaders());
-      console.log('Employees response:', response.data);
+      // console.log('Employees response:', response.data);
       
       let employeesData = [];
       if (Array.isArray(response.data)) {
@@ -124,7 +124,7 @@ const MonthlyAttandance = () => {
         totalEmployees: employeesData.length
       }));
       
-      console.log('Total employees count:', employeesData.length);
+      // console.log('Total employees count:', employeesData.length);
       
     } catch (error) {
       console.error('Error fetching employees:', error);
@@ -140,7 +140,7 @@ const MonthlyAttandance = () => {
     try {
       setLateEmployeesLoading(true);
       const response = await axios.get(`${API_BASE_URL}/attendance/today/late`, getAuthHeaders());
-      console.log('Late employees response:', response.data);
+      // console.log('Late employees response:', response.data);
       
       if (response.data.success) {
         const lateData = response.data.data || [];
@@ -169,7 +169,7 @@ const MonthlyAttandance = () => {
     try {
       setStatsLoading(true);
       const response = await axios.get(`${API_BASE_URL}/attendance/today/summary`, getAuthHeaders());
-      console.log('Dashboard stats response:', response.data);
+      // console.log('Dashboard stats response:', response.data);
       
       if (response.data.success && response.data.data) {
         setStats(prev => ({
@@ -179,7 +179,7 @@ const MonthlyAttandance = () => {
           attendanceRate: response.data.data.attendanceRate || 0,
           totalEmployees: prev.totalEmployees || response.data.data.totalEmployees || 0
         }));
-        console.log('Stats updated:', stats);
+        // console.log('Stats updated:', stats);
       } else {
         console.error('Invalid response structure:', response.data);
       }
@@ -193,13 +193,13 @@ const MonthlyAttandance = () => {
 
   // Fetch all data
   const fetchAllData = useCallback(async () => {
-    console.log('Fetching all data...');
+    // console.log('Fetching all data...');
     await Promise.all([
       fetchEmployees(),
       fetchTodayLateEmployees(),
       fetchDashboardStats()
     ]);
-    console.log('All data fetched');
+    // console.log('All data fetched');
   }, [fetchEmployees, fetchTodayLateEmployees, fetchDashboardStats]);
 
   useEffect(() => {

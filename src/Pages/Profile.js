@@ -42,7 +42,7 @@ const Profile = () => {
     joinDate: '',
     // designation: ''
   });
-  console.log('this is uer data role',userData.role)
+  // console.log('this is uer data role',userData.role)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -54,7 +54,7 @@ const Profile = () => {
         setLoading(true);
         if (userToken) {
           const decodedToken = await jwtDecode(userToken);
-          console.log('Decoded token:', decodedToken.role);
+          // console.log('Decoded token:', decodedToken.role);
 
           
           // Get additional user data from localStorage if available
@@ -72,7 +72,7 @@ const Profile = () => {
             // designation: decodedToken.designation || storedUser.designation || 'Staff'
           });
         }
-        console.log('setuserdata',setUserData.role)
+        // console.log('setuserdata',setUserData.role)
       } catch (error) {
         console.error('Error fetching user data:', error);
         setError('Failed to load profile data. Please try again later.');

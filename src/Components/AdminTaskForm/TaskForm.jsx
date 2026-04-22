@@ -40,12 +40,12 @@ const TaskForm = () => {
                 expectedEndDate: formatDateToDDMMYYYY(formData.expectedEndDate),
             };
 
-            const response = await axios.post('https://attendancemanagementbackend-oqfl.onrender.com/api/task/assign-task', payload, {
+            const response = await axios.post('http://localhost:3500/api/task/assign-task', payload, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
-            console.log('response for assign task', response)
+            // console.log('response for assign task', response)
             Swal.fire('Task Assigned Successfully')
             setFormData({
                 employeeId: "",

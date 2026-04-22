@@ -3,9 +3,9 @@ import { jwtDecode } from 'jwt-decode';
 
 const Profile = () => {
     const usertoken = localStorage.getItem('token')
-    console.log('user details',usertoken)
+    // console.log('user details',usertoken)
     const [userData,setUserData]=useState("")
-    console.log('dataaaa',userData)
+    // console.log('dataaaa',userData)
 
 
     useEffect(()=>{
@@ -13,7 +13,7 @@ const Profile = () => {
             try{
                 if(usertoken){
                     const data = jwtDecode(usertoken)  
-                    console.log('this is data for profile',data) 
+                    // console.log('this is data for profile',data) 
                     setUserData(data)
                 }
             }catch(error){

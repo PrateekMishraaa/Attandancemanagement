@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../../Components/AdminSidebar/Sidebar';
 import axios from "axios";
 import Leaves from '../Leaves/Leaves.jsx';
+import {jwtDecode} from "jwt-decode"
 
 const AdminDashboard = () => {
+  const adminname = localStorage.getItem('token')
+  const [adminName,setAdminName] = useState('')
+  // console.log("this is form admin name",adminname)
   const [openLeaves, setOpenLeaves] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,12 +19,27 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
+
+useEffect(()=>{
+  const FetchDetails = async()=>{
+    try{
+      if(adminname){
+        const decodeData = await jwtDecode(adminname)
+        // console.log('this is decode data for admin name',decodeData.name)
+        setAdminName(decodeData)
+      }
+    }catch(error){
+      console.log('error',error)
+    }
+  }
+  FetchDetails()
+},[])
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://attendancemanagementbackend-oqfl.onrender.com/api/admin/employees');
-        console.log('All employees:', response.data);
+        const response = await axios.get('http://localhost:3500/api/admin/employees');
+        // console.log('All employees:', response.data);
         
         if (response.data.success) {
           const employeesData = response.data.data;
@@ -595,7 +614,7 @@ const AdminDashboard = () => {
               </div>
               <div className="user-info">
                 <div className="user-details">
-                  <div className="user-name">Admin User</div>
+                  <div className="user-name">Welcome <span style={{color:"blue",fontWeight:"bold"}}>{adminName.name}</span></div>
                   <div className="user-role">Administrator</div>
                 </div>
                 <div className="user-avatar">A</div>

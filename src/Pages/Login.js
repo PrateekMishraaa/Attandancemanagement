@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const {Employeid} = useParams();
-  console.log('this is employee id ',Employeid)
+  // console.log('this is employee id ',Employeid)
   const [formData, setFormData] = useState({
     employeeId: "",
     password: ""
@@ -34,13 +34,13 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('https://attendancemanagementbackend-oqfl.onrender.com/api/auth/login', formData, {
+      const response = await axios.post('http://localhost:3500/api/auth/login', formData, {
         headers: {
           "Content-Type": "application/json"
         }
       });
       
-      console.log('Login response:', response.data);
+      // console.log('Login response:', response.data);
       
       if (response.data.success) {
         const { token, user } = response.data;
@@ -49,7 +49,7 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(user));
         
         const decoded = jwtDecode(token);
-        console.log('Decoded token:', decoded);
+        // console.log('Decoded token:', decoded);
         
         toast.success(`Welcome ${user.name}! Redirecting...`, {
           duration: 2000,

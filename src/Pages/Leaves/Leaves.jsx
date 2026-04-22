@@ -18,8 +18,8 @@ const Leaves = () => {
     const fetchLeaves = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('https://attendancemanagementbackend-oqfl.onrender.com/api/leave/getAllLeaves');
-            console.log('All leaves:', response.data);
+            const response = await axios.get('http://localhost:3500/api/leave/getAllLeaves');
+            // console.log('All leaves:', response.data);
             setLeaves(response.data.data || response.data.allLeaves || []);
             setError(false);
         } catch (error) {
@@ -40,7 +40,7 @@ const Leaves = () => {
         
         try {
             const response = await axios.put(
-                `https://attendancemanagementbackend-oqfl.onrender.com/api/leave/update-leave/${leaveId}`,
+                `http://localhost:3500/api/leave/update-leave/${leaveId}`,
                 { 
                     Status: newStatus,
                     Remarks: updateRemarks
@@ -52,7 +52,7 @@ const Leaves = () => {
                 }
             );
             
-            console.log('Leave updated successfully:', response.data);
+            // console.log('Leave updated successfully:', response.data);
             alert(`Leave ${newStatus.toLowerCase()} successfully!`);
             
             await fetchLeaves();

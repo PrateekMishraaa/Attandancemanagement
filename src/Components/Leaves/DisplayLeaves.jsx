@@ -4,13 +4,13 @@ import { useParams, Link } from 'react-router-dom';
 import {useNavigate} from "react-router-dom"
 
 // API Service Configuration
-const API_BASE_URL = 'https://attendancemanagementbackend-oqfl.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3500/api';
 
 // API Service Class
 class LeaveService {
     // Get all leaves for a specific employee by employee ID
     static async getLeavesByEmployeeId(employeeId) {
-        console.log('this is employee id from display leave',employeeId)
+        // console.log('this is employee id from display leave',employeeId)
         try {
             const response = await axios.get(`${API_BASE_URL}/leave/employee/${employeeId}/all-leaves`);
             return response.data;
@@ -68,14 +68,14 @@ class LeaveService {
 const DisplayLeaves = () => {
     const navigate = useNavigate()
     const { id } = useParams(); 
-    console.log('this is upper id',id)
+    // console.log('this is upper id',id)
     const [leaves, setLeaves] = useState([]);
     const [singleLeave, setSingleLeave] = useState(null);
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'single'
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [employeeId, setEmployeeId] = useState(null);
-    console.log('this is employee id',employeeId)
+    // console.log('this is employee id',employeeId)
 
     const handleNavigateLeave = () => {
         // Use the employeeId from state if available, otherwise use the id from params
@@ -95,12 +95,12 @@ const DisplayLeaves = () => {
         setLoading(true);
         setError(false);
         try {
-            console.log(`Fetching leaves for employee ID: ${empId}`);
+            // console.log(`Fetching leaves for employee ID: ${empId}`);
             
             // Using the API service to get leaves by employee ID
             const response = await LeaveService.getLeavesByEmployeeId(empId);
             
-            console.log('API Response:', response);
+            // console.log('API Response:', response);
             
             if (response.success && response.data && response.data.length > 0) {
                 setLeaves(response.data);
@@ -127,7 +127,7 @@ const DisplayLeaves = () => {
     // Function to fetch single leave by leave application ID
     const fetchSingleLeaveById = async (leaveId) => {
         try {
-            console.log(`Fetching leave application ID: ${leaveId}`);
+            // console.log(`Fetching leave application ID: ${leaveId}`);
             
             // Using the API service to get leave by ID
             const response = await LeaveService.getLeaveById(leaveId);

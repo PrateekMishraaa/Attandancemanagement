@@ -17,8 +17,8 @@ const EmployeWork = () => {
   // CRITICAL FIX: Remove colon from ID if present
   const cleanId = id?.startsWith(':') ? id.substring(1) : id;
   
-  console.log('Original ID from params:', id);
-  console.log('Cleaned ID for API:', cleanId);
+  // console.log('Original ID from params:', id);
+  // console.log('Cleaned ID for API:', cleanId);
   
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,8 +39,8 @@ const EmployeWork = () => {
     
     try {
       // Use cleanId instead of id
-      const apiUrl = `https://attendancemanagementbackend-oqfl.onrender.com/api/work/todays-work/${cleanId}`;
-      console.log('Calling API:', apiUrl);
+      const apiUrl = `http://localhost:3500/api/work/todays-work/${cleanId}`;
+      // console.log('Calling API:', apiUrl);
       
       const response = await axios.post(apiUrl, formData, {
         headers: {
@@ -48,7 +48,7 @@ const EmployeWork = () => {
         }
       });
       
-      console.log('Success response:', response.data);
+      // console.log('Success response:', response.data);
       Swal.fire('Thankyou For Submiting Your Todays Task')
       setFormData({
         date: new Date().toISOString().split('T')[0],

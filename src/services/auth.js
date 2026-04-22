@@ -217,7 +217,7 @@ export const verifyToken = async () => {
 export const getDashboardRoute = () => {
   const role = getUserRole();
   
-  console.log('Getting dashboard route for role:', role); // Debug log
+  // console.log('Getting dashboard route for role:', role); // Debug log
   
   switch(role) {
     case 'Admin':

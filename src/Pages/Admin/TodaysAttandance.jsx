@@ -123,8 +123,8 @@ const TodaysAttandance = () => {
 useEffect(()=>{
     const fetchEmployee = async()=>{
       try{
-        const response = await axios.get('https://attendancemanagementbackend-oqfl.onrender.com/api/admin/employees')
-        console.log('response employee',response.data)
+        const response = await axios.get('http://localhost:3500/api/admin/employees')
+        // console.log('response employee',response.data)
         setTotalEmp(response.data)
       }catch(error){
         console.log('error fetching employee',error)

@@ -1,8 +1,8 @@
 export const API_URL = process.env.REACT_APP_API_URL || 'https://attendancemanagementbackend-gg9v.onrender.com/api';
 
 export const OFFICE_LOCATION = {
-  latitude: 28.6139,  // Change to your office lat
-  longitude: 77.2090, // Change to your office lon
+  latitude: 28.60801,  // Change to your office lat
+  longitude: 77.36033, // Change to your office lon
   radius: 100 // meters
 };
 

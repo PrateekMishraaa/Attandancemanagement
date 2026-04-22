@@ -5,9 +5,9 @@ import toast, {Toaster} from "react-hot-toast"
 import {useNavigate} from "react-router-dom"
 const ApplicationForm = ({ employeeId }) => {
     const navigate = useNavigate()
-    console.log('this is emploree eid ',employeeId)
+    // console.log('thi/s is emploree eid ',employeeId)
     const userToken = localStorage.getItem('token')
-    console.log('this is user token',userToken)
+    // console.log('this is user token',userToken)
     const [userData,setUserData] = useState('')
   const [formData, setFormData] = useState({
     LeaveType: '',
@@ -24,7 +24,7 @@ const ApplicationForm = ({ employeeId }) => {
     AvailableCasualLeave: 0,
     AvailableSickLeave: 0,
   });
-console.log('this is application form data',formData)
+// console.log('this is application form data',formData)
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -34,7 +34,7 @@ useEffect(()=>{
     const fetchUserData = async()=>{
         if(userToken){
             const decodeToken = await jwtDecode(userToken)
-            console.log('this is this',decodeToken.id)
+            // console.log('this is this',decodeToken.id)
             setUserData(decodeToken)
         }
     }
@@ -56,7 +56,7 @@ useEffect(()=>{
 
     try {
       const response = await axios.post(
-        `https://attendancemanagementbackend-oqfl.onrender.com/api/leave/employee/leave/${userData.id}`,
+        `http://localhost:3500/api/leave/employee/leave/${userData.id}`,
         formData,
         {
           headers: {
@@ -66,7 +66,7 @@ useEffect(()=>{
           }
         }
       );
-      console.log('this is response',response)
+      // console.log('this is response',response)
       if (response.data.success) {
         toast.success( 'Leave application submitted successfully!');
         setTimeout(()=>{

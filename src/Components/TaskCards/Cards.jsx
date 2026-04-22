@@ -10,8 +10,8 @@ const [loading,setLoading] = useState(true)
 useEffect(()=>{
     const fetchTaskData = async()=>{
         try{
-            const response = await axios.get('https://attendancemanagementbackend-oqfl.onrender.com/api/task/get-alltask')
-            console.log('response for task asign',response.data.tasks)
+            const response = await axios.get('http://localhost:3500/api/task/get-alltask')
+            // console.log('response for task asign',response.data.tasks)
             setData(response.data.tasks)
         }catch(error){
             console.log(error)
