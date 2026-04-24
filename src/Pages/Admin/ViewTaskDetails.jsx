@@ -239,7 +239,7 @@ const ViewTaskDetails = () => {
         }
     };
 
-    // Add keyframes animation for spinner
+    
     const styleSheet = document.createElement("style");
     styleSheet.textContent = `
         @keyframes spin {

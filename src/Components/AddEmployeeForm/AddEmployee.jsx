@@ -10,7 +10,8 @@ const AddEmployee = () => {
         name:"",
         email:"",
         password:"",
-        phone:""
+        phone:"",
+        designation:""
     });
     // console.log('this is attendance form',formData)
 
@@ -20,7 +21,7 @@ const AddEmployee = () => {
     
     const handleSubmit=async(e)=>{
         e.preventDefault()
-        if(!formData.employeeId || !formData.email || !formData.name || !formData.password){
+        if(!formData.employeeId || !formData.email || !formData.name || !formData.password || !formData.designation){
             return toast.error('All fields are required')
         }
         try{
@@ -198,6 +199,19 @@ const AddEmployee = () => {
                 style={styles.input}
                 name='name'
                 value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
+               <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Designation <span style={styles.requiredStar}>*</span>
+              </label>
+              <input 
+                type="text" 
+                placeholder="Enter Designation" 
+                style={styles.input}
+                name='designation'
+                value={formData.designation}
                 onChange={handleChange}
               />
             </div>

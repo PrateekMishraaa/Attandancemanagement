@@ -7,7 +7,7 @@ import {jwtDecode} from "jwt-decode"
 const AdminDashboard = () => {
   const adminname = localStorage.getItem('token')
   const [adminName,setAdminName] = useState('')
-  // console.log("this is form admin name",adminname)
+  console.log("this is form admin name",adminname)
   const [openLeaves, setOpenLeaves] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +20,8 @@ const AdminDashboard = () => {
   const [isMobile, setIsMobile] = useState(false);
 
 
+
+  
 useEffect(()=>{
   const FetchDetails = async()=>{
     try{
@@ -610,14 +612,14 @@ useEffect(()=>{
             <div className="navbar-content">
               <div className="navbar-title">
                 <h1>Employee Management</h1>
-                <p>Manage and monitor all employees</p>
+                <p ><span style={{fontWeight:"bold",color:"blue",borderBottom:"2px solid blue",cursor:"pointer"}}>{adminName.name}</span>:Admin can Manage and monitor all employees</p>
               </div>
               <div className="user-info">
                 <div className="user-details">
                   <div className="user-name">Welcome <span style={{color:"blue",fontWeight:"bold"}}>{adminName.name}</span></div>
                   <div className="user-role">Administrator</div>
                 </div>
-                <div className="user-avatar">A</div>
+                <div className="user-avatar">{adminName.name?.[0]}</div>
               </div>
             </div>
           </div>
