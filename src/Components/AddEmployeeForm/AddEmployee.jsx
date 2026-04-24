@@ -25,7 +25,7 @@ const AddEmployee = () => {
             return toast.error('All fields are required')
         }
         try{
-            const response = await axios.post('http://localhost:3500/api/auth/register',formData,{
+            const response = await axios.post('https://attendancemanagementbackend-oqfl.onrender.com/api/auth/register',formData,{
                 headers:{
                     "Content-Type":"application/json"
                 }

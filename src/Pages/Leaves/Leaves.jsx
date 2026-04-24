@@ -19,7 +19,7 @@ const Leaves = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:3500/api/leave/getAllLeaves",
+        "https://attendancemanagementbackend-oqfl.onrender.com/api/leave/getAllLeaves",
       );
       console.log('All leaves:', response.data);
       setLeaves(response.data.data || response.data.allLeaves || []);
@@ -42,7 +42,7 @@ const Leaves = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3500/api/leave/update-leave/${leaveId}`,
+        `https://attendancemanagementbackend-oqfl.onrender.com/api/leave/update-leave/${leaveId}`,
         {
           Status: newStatus,
           Remarks: updateRemarks,

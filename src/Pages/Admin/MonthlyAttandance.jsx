@@ -88,7 +88,7 @@ const MonthlyAttandance = () => {
   const navigate = useNavigate();
 
   // FIXED: Remove duplicate /api/api
-  const API_BASE_URL = 'http://localhost:3500/api';
+  const API_BASE_URL = 'https://attendancemanagementbackend-oqfl.onrender.com/api';
 
   // Define getAuthHeaders with useCallback
   const getAuthHeaders = useCallback(() => ({
